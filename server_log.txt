@@ -1,0 +1,1450 @@
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3d, (C)2005-2011 SA-MP Team
+
+[16:41:09] 
+[16:41:09] Server Plugins
+[16:41:09] --------------
+[16:41:09]  Loading plugin: wp
+[16:41:09]  
+[16:41:09]  ==================
+[16:41:09]  
+[16:41:09]   Whirlpool loaded
+[16:41:09]  
+[16:41:09]  ==================
+[16:41:09]  
+[16:41:09]   Loaded.
+[16:41:09]  Loading plugin: sscanf
+[16:41:09] 
+
+[16:41:09]  ===============================
+
+[16:41:09]       sscanf plugin loaded.     
+
+[16:41:09]    (c) 2009 Alex "Y_Less" Cole
+
+[16:41:09]    0.3d-R2 500 Players "dnee"
+
+[16:41:09]  ===============================
+
+[16:41:09]   Loaded.
+[16:41:09]  Loading plugin: streamer
+[16:41:09] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[16:41:09]   Loaded.
+[16:41:09]  Loading plugin: mysql
+[16:41:09] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[16:41:09]   Loaded.
+[16:41:09]  Loading plugin: irc
+[16:41:09] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[16:41:09]   Loaded.
+[16:41:09]  Loading plugin: GeoIP_Plugin
+[16:41:09] GeoIP_Plugin got loaded.
+[16:41:09]   Loaded.
+[16:41:09]  Loaded 6 plugins.
+
+[16:41:10] 
+[16:41:10] Filterscripts
+[16:41:10] ---------------
+[16:41:10]   Loaded 0 filterscripts.
+
+[16:41:10] sscanf error: System not initialised.
+[16:41:11] -----------------------------------------------------------------
+[16:41:11] Script: Vortex Roleplay 2 by Calgon and Brian.
+[16:41:11] Status: Loaded OnGameModeInit, running version 2.0.3 (r318)
+[16:41:11] -----------------------------------------------------------------
+[16:41:11] main() has been called.
+[16:41:11] Number of vehicle models: 0
+[16:41:11] errorid: 1046 | error: No database selected | resultid: -1 | extraid: -1 | callback: NULL | query: UPDATE playeraccounts SET playerStatus = '0' WHERE playerStatus = '1'
+[16:41:11] errorid: 1046 | error: No database selected | resultid: 8 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM vehicles
+[16:41:11] errorid: 1046 | error: No database selected | resultid: 9 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM houses
+[16:41:11] errorid: 1046 | error: No database selected | resultid: 10 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM jobs
+[16:41:11] errorid: 1046 | error: No database selected | resultid: 11 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM groups
+[16:41:11] errorid: 1046 | error: No database selected | resultid: 13 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM assets
+[16:41:11] errorid: 1046 | error: No database selected | resultid: 27 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businessitems
+[16:41:11] errorid: 1046 | error: No database selected | resultid: 14 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businesses
+[16:41:11] errorid: 1046 | error: No database selected | resultid: 21 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM atms
+[16:41:15] --- Server Shutting Down.
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3d, (C)2005-2011 SA-MP Team
+
+[16:41:33] 
+[16:41:33] Server Plugins
+[16:41:33] --------------
+[16:41:33]  Loading plugin: wp
+[16:41:33]  
+[16:41:33]  ==================
+[16:41:33]  
+[16:41:33]   Whirlpool loaded
+[16:41:33]  
+[16:41:33]  ==================
+[16:41:33]  
+[16:41:33]   Loaded.
+[16:41:33]  Loading plugin: sscanf
+[16:41:33] 
+
+[16:41:33]  ===============================
+
+[16:41:33]       sscanf plugin loaded.     
+
+[16:41:33]    (c) 2009 Alex "Y_Less" Cole
+
+[16:41:33]    0.3d-R2 500 Players "dnee"
+
+[16:41:33]  ===============================
+
+[16:41:33]   Loaded.
+[16:41:33]  Loading plugin: streamer
+[16:41:33] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[16:41:33]   Loaded.
+[16:41:33]  Loading plugin: mysql
+[16:41:34] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[16:41:34]   Loaded.
+[16:41:34]  Loading plugin: irc
+[16:41:34] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[16:41:34]   Loaded.
+[16:41:34]  Loading plugin: GeoIP_Plugin
+[16:41:34] GeoIP_Plugin got loaded.
+[16:41:34]   Loaded.
+[16:41:34]  Loaded 6 plugins.
+
+[16:41:34] 
+[16:41:34] Filterscripts
+[16:41:34] ---------------
+[16:41:34]   Loaded 0 filterscripts.
+
+[16:41:34] sscanf error: System not initialised.
+[16:41:34] -----------------------------------------------------------------
+[16:41:34] Script: Vortex Roleplay 2 by Calgon and Brian.
+[16:41:34] Status: Loaded OnGameModeInit, running version 2.0.3 (r318)
+[16:41:34] -----------------------------------------------------------------
+[16:41:34] main() has been called.
+[16:41:34] Number of vehicle models: 0
+[16:41:34] errorid: 1046 | error: No database selected | resultid: -1 | extraid: -1 | callback: NULL | query: UPDATE playeraccounts SET playerStatus = '0' WHERE playerStatus = '1'
+[16:41:34] errorid: 1046 | error: No database selected | resultid: 8 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM vehicles
+[16:41:34] errorid: 1046 | error: No database selected | resultid: 9 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM houses
+[16:41:34] errorid: 1046 | error: No database selected | resultid: 10 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM jobs
+[16:41:34] errorid: 1046 | error: No database selected | resultid: 11 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM groups
+[16:41:34] errorid: 1046 | error: No database selected | resultid: 13 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM assets
+[16:41:34] errorid: 1046 | error: No database selected | resultid: 27 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businessitems
+[16:41:34] errorid: 1046 | error: No database selected | resultid: 14 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businesses
+[16:41:34] errorid: 1046 | error: No database selected | resultid: 21 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM atms
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3d, (C)2005-2011 SA-MP Team
+
+[16:42:45] 
+[16:42:45] Server Plugins
+[16:42:45] --------------
+[16:42:45]  Loading plugin: wp
+[16:42:45]  
+[16:42:45]  ==================
+[16:42:45]  
+[16:42:45]   Whirlpool loaded
+[16:42:45]  
+[16:42:45]  ==================
+[16:42:45]  
+[16:42:45]   Loaded.
+[16:42:45]  Loading plugin: sscanf
+[16:42:45] 
+
+[16:42:45]  ===============================
+
+[16:42:45]       sscanf plugin loaded.     
+
+[16:42:45]    (c) 2009 Alex "Y_Less" Cole
+
+[16:42:45]    0.3d-R2 500 Players "dnee"
+
+[16:42:45]  ===============================
+
+[16:42:45]   Loaded.
+[16:42:45]  Loading plugin: streamer
+[16:42:45] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[16:42:45]   Loaded.
+[16:42:45]  Loading plugin: mysql
+[16:42:45] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[16:42:45]   Loaded.
+[16:42:45]  Loading plugin: irc
+[16:42:45] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[16:42:45]   Loaded.
+[16:42:45]  Loading plugin: GeoIP_Plugin
+[16:42:45] GeoIP_Plugin got loaded.
+[16:42:45]   Loaded.
+[16:42:45]  Loaded 6 plugins.
+
+[16:42:45] 
+[16:42:45] Filterscripts
+[16:42:45] ---------------
+[16:42:45]   Loaded 0 filterscripts.
+
+[16:42:45] sscanf error: System not initialised.
+[16:42:45] -----------------------------------------------------------------
+[16:42:45] Script: Vortex Roleplay 2 by Calgon and Brian.
+[16:42:45] Status: Loaded OnGameModeInit, running version 2.0.3 (r318)
+[16:42:45] -----------------------------------------------------------------
+[16:42:45] main() has been called.
+[16:42:45] Number of vehicle models: 0
+[16:42:45] errorid: 1046 | error: No database selected | resultid: -1 | extraid: -1 | callback: NULL | query: UPDATE playeraccounts SET playerStatus = '0' WHERE playerStatus = '1'
+[16:42:45] errorid: 1046 | error: No database selected | resultid: 8 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM vehicles
+[16:42:45] errorid: 1046 | error: No database selected | resultid: 9 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM houses
+[16:42:45] errorid: 1046 | error: No database selected | resultid: 10 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM jobs
+[16:42:45] errorid: 1046 | error: No database selected | resultid: 11 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM groups
+[16:42:45] errorid: 1046 | error: No database selected | resultid: 13 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM assets
+[16:42:45] errorid: 1046 | error: No database selected | resultid: 27 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businessitems
+[16:42:45] errorid: 1046 | error: No database selected | resultid: 14 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businesses
+[16:42:45] errorid: 1046 | error: No database selected | resultid: 21 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM atms
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3d, (C)2005-2011 SA-MP Team
+
+[16:46:12] 
+[16:46:12] Server Plugins
+[16:46:12] --------------
+[16:46:12]  Loading plugin: wp
+[16:46:12]  
+[16:46:12]  ==================
+[16:46:12]  
+[16:46:12]   Whirlpool loaded
+[16:46:12]  
+[16:46:12]  ==================
+[16:46:12]  
+[16:46:12]   Loaded.
+[16:46:12]  Loading plugin: sscanf
+[16:46:12] 
+
+[16:46:12]  ===============================
+
+[16:46:12]       sscanf plugin loaded.     
+
+[16:46:12]    (c) 2009 Alex "Y_Less" Cole
+
+[16:46:12]    0.3d-R2 500 Players "dnee"
+
+[16:46:12]  ===============================
+
+[16:46:12]   Loaded.
+[16:46:12]  Loading plugin: streamer
+[16:46:12] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[16:46:12]   Loaded.
+[16:46:12]  Loading plugin: mysql
+[16:46:12] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[16:46:12]   Loaded.
+[16:46:12]  Loading plugin: irc
+[16:46:12] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[16:46:12]   Loaded.
+[16:46:12]  Loading plugin: GeoIP_Plugin
+[16:46:12] GeoIP_Plugin got loaded.
+[16:46:12]   Loaded.
+[16:46:12]  Loaded 6 plugins.
+
+[16:46:12] 
+[16:46:12] Filterscripts
+[16:46:12] ---------------
+[16:46:12]   Loaded 0 filterscripts.
+
+[16:46:12] OnGameo
+[16:46:13] -----------------------------------------------------------------
+[16:46:13] Script: Vortex Roleplay 2 by Calgon and Brian.
+[16:46:13] Status: Loaded OnGameModeInit, running version 2.0.3 (r318)
+[16:46:13] -----------------------------------------------------------------
+[16:46:13] main() has been called.
+[16:46:13] Number of vehicle models: 0
+[16:46:13] [script] 227 vehicles loaded.
+[16:46:13] [script] 1 houses loaded.
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3d, (C)2005-2011 SA-MP Team
+
+[16:46:33] 
+[16:46:33] Server Plugins
+[16:46:33] --------------
+[16:46:33]  Loading plugin: wp
+[16:46:33]  
+[16:46:33]  ==================
+[16:46:33]  
+[16:46:33]   Whirlpool loaded
+[16:46:33]  
+[16:46:33]  ==================
+[16:46:33]  
+[16:46:33]   Loaded.
+[16:46:33]  Loading plugin: sscanf
+[16:46:33] 
+
+[16:46:33]  ===============================
+
+[16:46:33]       sscanf plugin loaded.     
+
+[16:46:33]    (c) 2009 Alex "Y_Less" Cole
+
+[16:46:33]    0.3d-R2 500 Players "dnee"
+
+[16:46:33]  ===============================
+
+[16:46:33]   Loaded.
+[16:46:33]  Loading plugin: streamer
+[16:46:33] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[16:46:33]   Loaded.
+[16:46:33]  Loading plugin: mysql
+[16:46:33] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[16:46:33]   Loaded.
+[16:46:33]  Loading plugin: irc
+[16:46:33] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[16:46:33]   Loaded.
+[16:46:33]  Loading plugin: GeoIP_Plugin
+[16:46:33] GeoIP_Plugin got loaded.
+[16:46:33]   Loaded.
+[16:46:33]  Loaded 6 plugins.
+
+[16:46:33] 
+[16:46:33] Filterscripts
+[16:46:33] ---------------
+[16:46:33]   Loaded 0 filterscripts.
+
+[16:46:33] OnGameo
+[16:46:33] -----------------------------------------------------------------
+[16:46:33] Script: Vortex Roleplay 2 by Calgon and Brian.
+[16:46:33] Status: Loaded OnGameModeInit, running version 2.0.3 (r318)
+[16:46:33] -----------------------------------------------------------------
+[16:46:33] main() has been called.
+[16:46:33] Number of vehicle models: 0
+[16:46:33] [script] 227 vehicles loaded.
+[16:46:33] [script] 1 houses loaded.
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[16:47:40] 
+[16:47:40] Server Plugins
+[16:47:40] --------------
+[16:47:40]  Loading plugin: wp
+[16:47:40]  
+[16:47:40]  ==================
+[16:47:40]  
+[16:47:40]   Whirlpool loaded
+[16:47:40]  
+[16:47:40]  ==================
+[16:47:40]  
+[16:47:40]   Loaded.
+[16:47:40]  Loading plugin: sscanf
+[16:47:40] 
+
+[16:47:40]  ===============================
+
+[16:47:40]       sscanf plugin loaded.     
+
+[16:47:40]    (c) 2009 Alex "Y_Less" Cole
+
+[16:47:40]    0.3d-R2 500 Players "dnee"
+
+[16:47:40]  ===============================
+
+[16:47:40]   Loaded.
+[16:47:40]  Loading plugin: streamer
+[16:47:40] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[16:47:40]   Loaded.
+[16:47:40]  Loading plugin: mysql
+[16:47:40] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[16:47:40]   Loaded.
+[16:47:40]  Loading plugin: irc
+[16:47:40] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[16:47:40]   Loaded.
+[16:47:40]  Loading plugin: GeoIP_Plugin
+[16:47:40] GeoIP_Plugin got loaded.
+[16:47:40]   Loaded.
+[16:47:40]  Loaded 6 plugins.
+
+[16:47:40] 
+[16:47:40] Filterscripts
+[16:47:40] ---------------
+[16:47:40]   Loaded 0 filterscripts.
+
+[16:47:40] OnGameo
+[16:47:40] -----------------------------------------------------------------
+[16:47:40] Script: Vortex Roleplay 2 by Calgon and Brian.
+[16:47:40] Status: Loaded OnGameModeInit, running version 2.0.3 (r318)
+[16:47:40] -----------------------------------------------------------------
+[16:47:40] main() has been called.
+[16:47:40] Number of vehicle models: 0
+[16:47:40] [script] 227 vehicles loaded.
+[16:47:40] [script] 1 houses loaded.
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[16:27:41] 
+[16:27:41] Server Plugins
+[16:27:41] --------------
+[16:27:41]  Loading plugin: wp
+[16:27:41]  
+[16:27:41]  ==================
+[16:27:41]  
+[16:27:41]   Whirlpool loaded
+[16:27:41]  
+[16:27:41]  ==================
+[16:27:41]  
+[16:27:41]   Loaded.
+[16:27:41]  Loading plugin: sscanf
+[16:27:41] 
+
+[16:27:41]  ===============================
+
+[16:27:41]       sscanf plugin loaded.     
+
+[16:27:41]    (c) 2009 Alex "Y_Less" Cole
+
+[16:27:41]    0.3d-R2 500 Players "dnee"
+
+[16:27:41]  ===============================
+
+[16:27:41]   Loaded.
+[16:27:41]  Loading plugin: streamer
+[16:27:41] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[16:27:41]   Loaded.
+[16:27:41]  Loading plugin: mysql
+[16:27:41] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[16:27:41]   Loaded.
+[16:27:41]  Loading plugin: irc
+[16:27:41] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[16:27:41]   Loaded.
+[16:27:41]  Loading plugin: GeoIP_Plugin
+[16:27:41] GeoIP_Plugin got loaded.
+[16:27:41]   Loaded.
+[16:27:41]  Loaded 6 plugins.
+
+[16:27:41] 
+[16:27:41] Filterscripts
+[16:27:41] ---------------
+[16:27:41]   Loaded 0 filterscripts.
+
+[16:27:41] OnGameo
+[16:27:42] -----------------------------------------------------------------
+[16:27:42] Script: Vortex Roleplay 2 by Calgon and Brian.
+[16:27:42] Status: Loaded OnGameModeInit, running version 2.0.3 (r318)
+[16:27:42] -----------------------------------------------------------------
+[16:27:42] main() has been called.
+[16:27:42] Number of vehicle models: 0
+[16:27:42] [script] 227 vehicles loaded.
+[16:27:42] [script] 1 houses loaded.
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[16:28:16] 
+[16:28:16] Server Plugins
+[16:28:16] --------------
+[16:28:16]  Loading plugin: wp
+[16:28:16]  
+[16:28:16]  ==================
+[16:28:16]  
+[16:28:16]   Whirlpool loaded
+[16:28:16]  
+[16:28:16]  ==================
+[16:28:16]  
+[16:28:16]   Loaded.
+[16:28:16]  Loading plugin: sscanf
+[16:28:16] 
+
+[16:28:16]  ===============================
+
+[16:28:16]       sscanf plugin loaded.     
+
+[16:28:16]    (c) 2009 Alex "Y_Less" Cole
+
+[16:28:16]    0.3d-R2 500 Players "dnee"
+
+[16:28:16]  ===============================
+
+[16:28:16]   Loaded.
+[16:28:16]  Loading plugin: streamer
+[16:28:16] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[16:28:16]   Loaded.
+[16:28:16]  Loading plugin: mysql
+[16:28:16] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[16:28:16]   Loaded.
+[16:28:16]  Loading plugin: irc
+[16:28:16] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[16:28:16]   Loaded.
+[16:28:16]  Loading plugin: GeoIP_Plugin
+[16:28:16] GeoIP_Plugin got loaded.
+[16:28:16]   Loaded.
+[16:28:16]  Loaded 6 plugins.
+
+[16:28:16] 
+[16:28:16] Filterscripts
+[16:28:16] ---------------
+[16:28:16]   Loaded 0 filterscripts.
+
+[16:28:16] sscanf error: System not initialised.
+[16:28:16] -----------------------------------------------------------------
+[16:28:16] Script: Vortex Roleplay 2 by Calgon and Brian.
+[16:28:16] Status: Loaded OnGameModeInit, running version 2.0.4 (r321)
+[16:28:16] -----------------------------------------------------------------
+[16:28:16] main() has been called.
+[16:28:16] Number of vehicle models: 0
+[16:28:16] errorid: 1046 | error: No database selected | resultid: -1 | extraid: -1 | callback: NULL | query: UPDATE playeraccounts SET playerStatus = '0' WHERE playerStatus = '1'
+[16:28:16] errorid: 1046 | error: No database selected | resultid: 8 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM vehicles
+[16:28:16] errorid: 1046 | error: No database selected | resultid: 9 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM houses
+[16:28:16] errorid: 1046 | error: No database selected | resultid: 10 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM jobs
+[16:28:16] errorid: 1046 | error: No database selected | resultid: 11 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM groups
+[16:28:16] errorid: 1046 | error: No database selected | resultid: 13 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM assets
+[16:28:16] errorid: 1046 | error: No database selected | resultid: 27 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businessitems
+[16:28:16] errorid: 1046 | error: No database selected | resultid: 14 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businesses
+[16:28:16] errorid: 1046 | error: No database selected | resultid: 21 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM atms
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[16:29:01] 
+[16:29:01] Server Plugins
+[16:29:01] --------------
+[16:29:01]  Loading plugin: wp
+[16:29:01]  
+[16:29:01]  ==================
+[16:29:01]  
+[16:29:01]   Whirlpool loaded
+[16:29:01]  
+[16:29:01]  ==================
+[16:29:01]  
+[16:29:01]   Loaded.
+[16:29:01]  Loading plugin: sscanf
+[16:29:01] 
+
+[16:29:01]  ===============================
+
+[16:29:01]       sscanf plugin loaded.     
+
+[16:29:01]    (c) 2009 Alex "Y_Less" Cole
+
+[16:29:01]    0.3d-R2 500 Players "dnee"
+
+[16:29:01]  ===============================
+
+[16:29:01]   Loaded.
+[16:29:01]  Loading plugin: streamer
+[16:29:01] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[16:29:01]   Loaded.
+[16:29:01]  Loading plugin: mysql
+[16:29:01] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[16:29:01]   Loaded.
+[16:29:01]  Loading plugin: irc
+[16:29:01] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[16:29:01]   Loaded.
+[16:29:01]  Loading plugin: GeoIP_Plugin
+[16:29:01] GeoIP_Plugin got loaded.
+[16:29:01]   Loaded.
+[16:29:01]  Loaded 6 plugins.
+
+[16:29:01] 
+[16:29:01] Filterscripts
+[16:29:01] ---------------
+[16:29:01]   Loaded 0 filterscripts.
+
+[16:29:01] sscanf error: System not initialised.
+[16:29:01] -----------------------------------------------------------------
+[16:29:01] Script: Vortex Roleplay 2 by Calgon and Brian.
+[16:29:01] Status: Loaded OnGameModeInit, running version 2.0.4 (r321)
+[16:29:01] -----------------------------------------------------------------
+[16:29:01] main() has been called.
+[16:29:01] Number of vehicle models: 0
+[16:29:01] errorid: 1046 | error: No database selected | resultid: -1 | extraid: -1 | callback: NULL | query: UPDATE playeraccounts SET playerStatus = '0' WHERE playerStatus = '1'
+[16:29:01] errorid: 1046 | error: No database selected | resultid: 8 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM vehicles
+[16:29:01] errorid: 1046 | error: No database selected | resultid: 9 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM houses
+[16:29:01] errorid: 1046 | error: No database selected | resultid: 10 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM jobs
+[16:29:01] errorid: 1046 | error: No database selected | resultid: 11 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM groups
+[16:29:01] errorid: 1046 | error: No database selected | resultid: 13 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM assets
+[16:29:01] errorid: 1046 | error: No database selected | resultid: 27 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businessitems
+[16:29:01] errorid: 1046 | error: No database selected | resultid: 14 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businesses
+[16:29:01] errorid: 1046 | error: No database selected | resultid: 21 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM atms
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[16:30:59] 
+[16:30:59] Server Plugins
+[16:30:59] --------------
+[16:30:59]  Loading plugin: wp
+[16:30:59]  
+[16:30:59]  ==================
+[16:30:59]  
+[16:30:59]   Whirlpool loaded
+[16:30:59]  
+[16:30:59]  ==================
+[16:30:59]  
+[16:30:59]   Loaded.
+[16:30:59]  Loading plugin: sscanf
+[16:30:59] 
+
+[16:30:59]  ===============================
+
+[16:30:59]       sscanf plugin loaded.     
+
+[16:30:59]    (c) 2009 Alex "Y_Less" Cole
+
+[16:30:59]    0.3d-R2 500 Players "dnee"
+
+[16:30:59]  ===============================
+
+[16:30:59]   Loaded.
+[16:30:59]  Loading plugin: streamer
+[16:30:59] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[16:30:59]   Loaded.
+[16:30:59]  Loading plugin: mysql
+[16:30:59] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[16:30:59]   Loaded.
+[16:30:59]  Loading plugin: irc
+[16:30:59] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[16:30:59]   Loaded.
+[16:30:59]  Loading plugin: GeoIP_Plugin
+[16:30:59] GeoIP_Plugin got loaded.
+[16:30:59]   Loaded.
+[16:30:59]  Loaded 6 plugins.
+
+[16:30:59] 
+[16:30:59] Filterscripts
+[16:30:59] ---------------
+[16:30:59]   Loaded 0 filterscripts.
+
+[16:30:59] sscanf error: System not initialised.
+[16:30:59] -----------------------------------------------------------------
+[16:30:59] Script: Vortex Roleplay 2 by Calgon and Brian.
+[16:30:59] Status: Loaded OnGameModeInit, running version 2.0.4 (r321)
+[16:30:59] -----------------------------------------------------------------
+[16:30:59] main() has been called.
+[16:30:59] Number of vehicle models: 0
+[16:30:59] errorid: 1046 | error: No database selected | resultid: -1 | extraid: -1 | callback: NULL | query: UPDATE playeraccounts SET playerStatus = '0' WHERE playerStatus = '1'
+[16:30:59] errorid: 1046 | error: No database selected | resultid: 8 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM vehicles
+[16:30:59] errorid: 1046 | error: No database selected | resultid: 9 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM houses
+[16:30:59] errorid: 1046 | error: No database selected | resultid: 10 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM jobs
+[16:30:59] errorid: 1046 | error: No database selected | resultid: 11 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM groups
+[16:30:59] errorid: 1046 | error: No database selected | resultid: 13 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM assets
+[16:30:59] errorid: 1046 | error: No database selected | resultid: 27 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businessitems
+[16:30:59] errorid: 1046 | error: No database selected | resultid: 14 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businesses
+[16:30:59] errorid: 1046 | error: No database selected | resultid: 21 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM atms
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[16:32:19] 
+[16:32:19] Server Plugins
+[16:32:19] --------------
+[16:32:19]  Loading plugin: wp
+[16:32:19]  
+[16:32:19]  ==================
+[16:32:19]  
+[16:32:19]   Whirlpool loaded
+[16:32:19]  
+[16:32:19]  ==================
+[16:32:19]  
+[16:32:19]   Loaded.
+[16:32:19]  Loading plugin: sscanf
+[16:32:19] 
+
+[16:32:19]  ===============================
+
+[16:32:19]       sscanf plugin loaded.     
+
+[16:32:19]    (c) 2009 Alex "Y_Less" Cole
+
+[16:32:19]    0.3d-R2 500 Players "dnee"
+
+[16:32:19]  ===============================
+
+[16:32:19]   Loaded.
+[16:32:19]  Loading plugin: streamer
+[16:32:19] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[16:32:19]   Loaded.
+[16:32:19]  Loading plugin: mysql
+[16:32:19] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[16:32:19]   Loaded.
+[16:32:19]  Loading plugin: irc
+[16:32:19] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[16:32:19]   Loaded.
+[16:32:19]  Loading plugin: GeoIP_Plugin
+[16:32:19] GeoIP_Plugin got loaded.
+[16:32:19]   Loaded.
+[16:32:19]  Loaded 6 plugins.
+
+[16:32:19] 
+[16:32:19] Filterscripts
+[16:32:19] ---------------
+[16:32:19]   Loaded 0 filterscripts.
+
+[16:32:20] sscanf error: System not initialised.
+[16:32:20] -----------------------------------------------------------------
+[16:32:20] Script: Vortex Roleplay 2 by Calgon and Brian.
+[16:32:20] Status: Loaded OnGameModeInit, running version 2.0.4 (r321)
+[16:32:20] -----------------------------------------------------------------
+[16:32:20] main() has been called.
+[16:32:20] Number of vehicle models: 0
+[16:32:20] errorid: 1046 | error: No database selected | resultid: -1 | extraid: -1 | callback: NULL | query: UPDATE playeraccounts SET playerStatus = '0' WHERE playerStatus = '1'
+[16:32:20] errorid: 1046 | error: No database selected | resultid: 8 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM vehicles
+[16:32:20] errorid: 1046 | error: No database selected | resultid: 9 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM houses
+[16:32:20] errorid: 1046 | error: No database selected | resultid: 10 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM jobs
+[16:32:20] errorid: 1046 | error: No database selected | resultid: 11 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM groups
+[16:32:20] errorid: 1046 | error: No database selected | resultid: 13 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM assets
+[16:32:20] errorid: 1046 | error: No database selected | resultid: 27 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businessitems
+[16:32:20] errorid: 1046 | error: No database selected | resultid: 14 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businesses
+[16:32:20] errorid: 1046 | error: No database selected | resultid: 21 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM atms
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[10:19:12] 
+[10:19:12] Server Plugins
+[10:19:12] --------------
+[10:19:12]  Loading plugin: wp
+[10:19:12]  
+[10:19:12]  ==================
+[10:19:12]  
+[10:19:12]   Whirlpool loaded
+[10:19:12]  
+[10:19:12]  ==================
+[10:19:12]  
+[10:19:12]   Loaded.
+[10:19:12]  Loading plugin: sscanf
+[10:19:12] 
+
+[10:19:12]  ===============================
+
+[10:19:12]       sscanf plugin loaded.     
+
+[10:19:12]    (c) 2009 Alex "Y_Less" Cole
+
+[10:19:12]    0.3d-R2 500 Players "dnee"
+
+[10:19:12]  ===============================
+
+[10:19:12]   Loaded.
+[10:19:12]  Loading plugin: streamer
+[10:19:13] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[10:19:13]   Loaded.
+[10:19:13]  Loading plugin: mysql
+[10:19:14] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[10:19:14]   Loaded.
+[10:19:14]  Loading plugin: irc
+[10:19:14] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[10:19:14]   Loaded.
+[10:19:14]  Loading plugin: GeoIP_Plugin
+[10:19:15] GeoIP_Plugin got loaded.
+[10:19:15]   Loaded.
+[10:19:15]  Loaded 6 plugins.
+
+[10:19:15] 
+[10:19:15] Filterscripts
+[10:19:15] ---------------
+[10:19:15]   Loaded 0 filterscripts.
+
+[10:19:15] sscanf error: System not initialised.
+[10:19:16] -----------------------------------------------------------------
+[10:19:16] Script: Vortex Roleplay 2 by Calgon and Brian.
+[10:19:16] Status: Loaded OnGameModeInit, running version 2.0.4 (r321)
+[10:19:16] -----------------------------------------------------------------
+[10:19:16] main() has been called.
+[10:19:16] Number of vehicle models: 0
+[10:19:16] errorid: 1046 | error: No database selected | resultid: -1 | extraid: -1 | callback: NULL | query: UPDATE playeraccounts SET playerStatus = '0' WHERE playerStatus = '1'
+[10:19:16] errorid: 1046 | error: No database selected | resultid: 8 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM vehicles
+[10:19:16] errorid: 1046 | error: No database selected | resultid: 9 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM houses
+[10:19:16] errorid: 1046 | error: No database selected | resultid: 10 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM jobs
+[10:19:16] errorid: 1046 | error: No database selected | resultid: 11 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM groups
+[10:19:16] errorid: 1046 | error: No database selected | resultid: 13 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM assets
+[10:19:16] errorid: 1046 | error: No database selected | resultid: 27 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businessitems
+[10:19:16] errorid: 1046 | error: No database selected | resultid: 14 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businesses
+[10:19:16] errorid: 1046 | error: No database selected | resultid: 21 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM atms
+[10:20:10] --- Server Shutting Down.
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[10:21:45] 
+[10:21:45] Server Plugins
+[10:21:45] --------------
+[10:21:45]  Loading plugin: wp
+[10:21:45]  
+[10:21:45]  ==================
+[10:21:45]  
+[10:21:45]   Whirlpool loaded
+[10:21:45]  
+[10:21:45]  ==================
+[10:21:45]  
+[10:21:45]   Loaded.
+[10:21:45]  Loading plugin: sscanf
+[10:21:45] 
+
+[10:21:45]  ===============================
+
+[10:21:45]       sscanf plugin loaded.     
+
+[10:21:45]    (c) 2009 Alex "Y_Less" Cole
+
+[10:21:45]    0.3d-R2 500 Players "dnee"
+
+[10:21:45]  ===============================
+
+[10:21:45]   Loaded.
+[10:21:45]  Loading plugin: streamer
+[10:21:45] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[10:21:45]   Loaded.
+[10:21:45]  Loading plugin: mysql
+[10:21:45] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[10:21:45]   Loaded.
+[10:21:45]  Loading plugin: irc
+[10:21:45] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[10:21:45]   Loaded.
+[10:21:45]  Loading plugin: GeoIP_Plugin
+[10:21:45] GeoIP_Plugin got loaded.
+[10:21:45]   Loaded.
+[10:21:45]  Loaded 6 plugins.
+
+[10:21:46] 
+[10:21:46] Filterscripts
+[10:21:46] ---------------
+[10:21:46]   Loaded 0 filterscripts.
+
+[10:21:46] sscanf error: System not initialised.
+[10:21:46] -----------------------------------------------------------------
+[10:21:46] Script: Vortex Roleplay 2 by Calgon and Brian.
+[10:21:46] Status: Loaded OnGameModeInit, running version 2.0.4 (r321)
+[10:21:46] -----------------------------------------------------------------
+[10:21:46] main() has been called.
+[10:21:46] Number of vehicle models: 0
+[10:21:46] errorid: 1046 | error: No database selected | resultid: -1 | extraid: -1 | callback: NULL | query: UPDATE playeraccounts SET playerStatus = '0' WHERE playerStatus = '1'
+[10:21:46] errorid: 1046 | error: No database selected | resultid: 8 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM vehicles
+[10:21:46] errorid: 1046 | error: No database selected | resultid: 9 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM houses
+[10:21:46] errorid: 1046 | error: No database selected | resultid: 10 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM jobs
+[10:21:46] errorid: 1046 | error: No database selected | resultid: 11 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM groups
+[10:21:46] errorid: 1046 | error: No database selected | resultid: 13 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM assets
+[10:21:46] errorid: 1046 | error: No database selected | resultid: 27 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businessitems
+[10:21:46] errorid: 1046 | error: No database selected | resultid: 14 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businesses
+[10:21:46] errorid: 1046 | error: No database selected | resultid: 21 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM atms
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[10:25:12] 
+[10:25:12] Server Plugins
+[10:25:12] --------------
+[10:25:12]  Loading plugin: wp
+[10:25:12]  
+[10:25:12]  ==================
+[10:25:12]  
+[10:25:12]   Whirlpool loaded
+[10:25:12]  
+[10:25:12]  ==================
+[10:25:12]  
+[10:25:12]   Loaded.
+[10:25:12]  Loading plugin: sscanf
+[10:25:12] 
+
+[10:25:12]  ===============================
+
+[10:25:12]       sscanf plugin loaded.     
+
+[10:25:12]    (c) 2009 Alex "Y_Less" Cole
+
+[10:25:12]    0.3d-R2 500 Players "dnee"
+
+[10:25:12]  ===============================
+
+[10:25:12]   Loaded.
+[10:25:12]  Loading plugin: streamer
+[10:25:12] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[10:25:12]   Loaded.
+[10:25:12]  Loading plugin: mysql
+[10:25:12] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[10:25:12]   Loaded.
+[10:25:12]  Loading plugin: irc
+[10:25:12] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[10:25:12]   Loaded.
+[10:25:12]  Loading plugin: GeoIP_Plugin
+[10:25:12] GeoIP_Plugin got loaded.
+[10:25:12]   Loaded.
+[10:25:12]  Loaded 6 plugins.
+
+[10:25:12] 
+[10:25:12] Filterscripts
+[10:25:12] ---------------
+[10:25:12]   Loaded 0 filterscripts.
+
+[10:25:12] sscanf error: System not initialised.
+[10:25:12] -----------------------------------------------------------------
+[10:25:12] Script: Vortex Roleplay 2 by Calgon and Brian.
+[10:25:12] Status: Loaded OnGameModeInit, running version 2.0.4 (r321)
+[10:25:12] -----------------------------------------------------------------
+[10:25:12] main() has been called.
+[10:25:12] Number of vehicle models: 0
+[10:25:12] errorid: 1046 | error: No database selected | resultid: -1 | extraid: -1 | callback: NULL | query: UPDATE playeraccounts SET playerStatus = '0' WHERE playerStatus = '1'
+[10:25:12] errorid: 1046 | error: No database selected | resultid: 8 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM vehicles
+[10:25:12] errorid: 1046 | error: No database selected | resultid: 9 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM houses
+[10:25:12] errorid: 1046 | error: No database selected | resultid: 10 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM jobs
+[10:25:12] errorid: 1046 | error: No database selected | resultid: 11 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM groups
+[10:25:12] errorid: 1046 | error: No database selected | resultid: 13 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM assets
+[10:25:12] errorid: 1046 | error: No database selected | resultid: 27 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businessitems
+[10:25:12] errorid: 1046 | error: No database selected | resultid: 14 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM businesses
+[10:25:12] errorid: 1046 | error: No database selected | resultid: 21 | extraid: 0 | callback: OnQueryFinish | query: SELECT * FROM atms
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[10:26:00] 
+[10:26:00] Server Plugins
+[10:26:00] --------------
+[10:26:00]  Loading plugin: wp
+[10:26:00]  
+[10:26:00]  ==================
+[10:26:00]  
+[10:26:00]   Whirlpool loaded
+[10:26:00]  
+[10:26:00]  ==================
+[10:26:00]  
+[10:26:00]   Loaded.
+[10:26:00]  Loading plugin: sscanf
+[10:26:00] 
+
+[10:26:00]  ===============================
+
+[10:26:00]       sscanf plugin loaded.     
+
+[10:26:00]    (c) 2009 Alex "Y_Less" Cole
+
+[10:26:00]    0.3d-R2 500 Players "dnee"
+
+[10:26:00]  ===============================
+
+[10:26:00]   Loaded.
+[10:26:00]  Loading plugin: streamer
+[10:26:00] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[10:26:00]   Loaded.
+[10:26:00]  Loading plugin: mysql
+[10:26:00] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[10:26:00]   Loaded.
+[10:26:00]  Loading plugin: irc
+[10:26:00] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[10:26:00]   Loaded.
+[10:26:00]  Loading plugin: GeoIP_Plugin
+[10:26:00] GeoIP_Plugin got loaded.
+[10:26:00]   Loaded.
+[10:26:00]  Loaded 6 plugins.
+
+[10:26:00] 
+[10:26:00] Filterscripts
+[10:26:00] ---------------
+[10:26:00]   Loaded 0 filterscripts.
+
+[10:26:00] -----------------------------------------------------------------
+[10:26:00] Script: Vortex Roleplay 2 by Calgon and Brian.
+[10:26:00] Status: Loaded OnGameModeInit, running version 2.0.4 (r321)
+[10:26:00] -----------------------------------------------------------------
+[10:26:00] main() has been called.
+[10:26:00] Number of vehicle models: 0
+[10:26:01] [script] 227 vehicles loaded.
+[10:26:01] [script] 1 houses loaded.
+[10:27:00] Incoming connection: 127.0.0.1:54073
+[10:27:01] [join] Sam_Axe has joined the server (0:127.0.0.1)
+[10:27:38] [part] Sam_Axe has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[10:27:57] 
+[10:27:57] Server Plugins
+[10:27:57] --------------
+[10:27:57]  Loading plugin: wp
+[10:27:57]  
+[10:27:57]  ==================
+[10:27:57]  
+[10:27:57]   Whirlpool loaded
+[10:27:57]  
+[10:27:57]  ==================
+[10:27:57]  
+[10:27:57]   Loaded.
+[10:27:57]  Loading plugin: sscanf
+[10:27:57] 
+
+[10:27:57]  ===============================
+
+[10:27:57]       sscanf plugin loaded.     
+
+[10:27:57]    (c) 2009 Alex "Y_Less" Cole
+
+[10:27:57]    0.3d-R2 500 Players "dnee"
+
+[10:27:57]  ===============================
+
+[10:27:57]   Loaded.
+[10:27:57]  Loading plugin: streamer
+[10:27:57] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[10:27:57]   Loaded.
+[10:27:58]  Loading plugin: mysql
+[10:27:58] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[10:27:58]   Loaded.
+[10:27:58]  Loading plugin: irc
+[10:27:58] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[10:27:58]   Loaded.
+[10:27:58]  Loading plugin: GeoIP_Plugin
+[10:27:58] GeoIP_Plugin got loaded.
+[10:27:58]   Loaded.
+[10:27:58]  Loaded 6 plugins.
+
+[10:27:58] 
+[10:27:58] Filterscripts
+[10:27:58] ---------------
+[10:27:58]   Loaded 0 filterscripts.
+
+[10:27:58] -----------------------------------------------------------------
+[10:27:58] Script: Vortex Roleplay 2 by Calgon and Brian.
+[10:27:58] Status: Loaded OnGameModeInit, running version 2.0.4 (r321)
+[10:27:58] -----------------------------------------------------------------
+[10:27:58] main() has been called.
+[10:27:58] Number of vehicle models: 0
+[10:28:25] Incoming connection: 127.0.0.1:55710
+[10:28:25] [join] Sam_Axe has joined the server (0:127.0.0.1)
+[10:28:31] [chat] [Sam_Axe]: atata
+[10:36:19] [chat] [Sam_Axe]: ata
+[10:36:20] [part] Sam_Axe has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[10:36:51] 
+[10:36:51] Server Plugins
+[10:36:51] --------------
+[10:36:51]  Loading plugin: wp
+[10:36:51]  
+[10:36:51]  ==================
+[10:36:51]  
+[10:36:51]   Whirlpool loaded
+[10:36:51]  
+[10:36:51]  ==================
+[10:36:51]  
+[10:36:51]   Loaded.
+[10:36:51]  Loading plugin: sscanf
+[10:36:51] 
+
+[10:36:51]  ===============================
+
+[10:36:51]       sscanf plugin loaded.     
+
+[10:36:51]    (c) 2009 Alex "Y_Less" Cole
+
+[10:36:51]    0.3d-R2 500 Players "dnee"
+
+[10:36:51]  ===============================
+
+[10:36:51]   Loaded.
+[10:36:51]  Loading plugin: streamer
+[10:36:51] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[10:36:51]   Loaded.
+[10:36:51]  Loading plugin: mysql
+[10:36:51] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[10:36:51]   Loaded.
+[10:36:51]  Loading plugin: irc
+[10:36:51] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[10:36:51]   Loaded.
+[10:36:51]  Loading plugin: GeoIP_Plugin
+[10:36:51] GeoIP_Plugin got loaded.
+[10:36:51]   Loaded.
+[10:36:51]  Loaded 6 plugins.
+
+[10:36:51] 
+[10:36:51] Filterscripts
+[10:36:51] ---------------
+[10:36:51]   Loaded 0 filterscripts.
+
+[10:36:51] -----------------------------------------------------------------
+[10:36:51] Script: Vortex Roleplay 2 by Calgon and Brian.
+[10:36:51] Status: Loaded OnGameModeInit, running version 2.0.4 (r321)
+[10:36:51] -----------------------------------------------------------------
+[10:36:51] main() has been called.
+[10:36:51] Number of vehicle models: 0
+[10:37:12] Incoming connection: 127.0.0.1:52017
+[10:37:12] [join] Sam_Axe has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[10:38:02] 
+[10:38:02] Server Plugins
+[10:38:02] --------------
+[10:38:02]  Loading plugin: wp
+[10:38:02]  
+[10:38:02]  ==================
+[10:38:02]  
+[10:38:02]   Whirlpool loaded
+[10:38:02]  
+[10:38:02]  ==================
+[10:38:02]  
+[10:38:02]   Loaded.
+[10:38:02]  Loading plugin: sscanf
+[10:38:02] 
+
+[10:38:02]  ===============================
+
+[10:38:02]       sscanf plugin loaded.     
+
+[10:38:02]    (c) 2009 Alex "Y_Less" Cole
+
+[10:38:02]    0.3d-R2 500 Players "dnee"
+
+[10:38:02]  ===============================
+
+[10:38:02]   Loaded.
+[10:38:02]  Loading plugin: streamer
+[10:38:02] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[10:38:02]   Loaded.
+[10:38:02]  Loading plugin: mysql
+[10:38:02] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[10:38:02]   Loaded.
+[10:38:02]  Loading plugin: irc
+[10:38:02] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[10:38:02]   Loaded.
+[10:38:02]  Loading plugin: GeoIP_Plugin
+[10:38:02] GeoIP_Plugin got loaded.
+[10:38:02]   Loaded.
+[10:38:02]  Loaded 6 plugins.
+
+[10:38:02] 
+[10:38:02] Filterscripts
+[10:38:02] ---------------
+[10:38:02]   Loaded 0 filterscripts.
+
+[10:38:02] -----------------------------------------------------------------
+[10:38:02] Script: Vortex Roleplay 2 by Calgon and Brian.
+[10:38:02] Status: Loaded OnGameModeInit, running version 2.0.4 (r321)
+[10:38:02] -----------------------------------------------------------------
+[10:38:02] main() has been called.
+[10:38:02] Number of vehicle models: 0
+[10:38:22] Incoming connection: 127.0.0.1:52018
+[10:38:22] [join] Sam_Axe has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3e, (C)2005-2012 SA-MP Team
+
+[10:38:47] 
+[10:38:47] Server Plugins
+[10:38:47] --------------
+[10:38:47]  Loading plugin: wp
+[10:38:47]  
+[10:38:47]  ==================
+[10:38:47]  
+[10:38:47]   Whirlpool loaded
+[10:38:47]  
+[10:38:47]  ==================
+[10:38:47]  
+[10:38:47]   Loaded.
+[10:38:47]  Loading plugin: sscanf
+[10:38:47] 
+
+[10:38:47]  ===============================
+
+[10:38:47]       sscanf plugin loaded.     
+
+[10:38:47]    (c) 2009 Alex "Y_Less" Cole
+
+[10:38:47]    0.3d-R2 500 Players "dnee"
+
+[10:38:47]  ===============================
+
+[10:38:47]   Loaded.
+[10:38:47]  Loading plugin: streamer
+[10:38:47] 
+
+*** Streamer Plugin v2.6.1 by Incognito loaded ***
+
+[10:38:47]   Loaded.
+[10:38:47]  Loading plugin: mysql
+[10:38:47] 
+
+  > MySQL plugin R6-2 successfully loaded.
+
+[10:38:47]   Loaded.
+[10:38:47]  Loading plugin: irc
+[10:38:47] 
+
+*** IRC Plugin v1.4.2 by Incognito loaded ***
+
+[10:38:47]   Loaded.
+[10:38:47]  Loading plugin: GeoIP_Plugin
+[10:38:47] GeoIP_Plugin got loaded.
+[10:38:47]   Loaded.
+[10:38:47]  Loaded 6 plugins.
+
+[10:38:47] 
+[10:38:47] Filterscripts
+[10:38:47] ---------------
+[10:38:47]   Loaded 0 filterscripts.
+
+[10:38:47] -----------------------------------------------------------------
+[10:38:47] Script: Vortex Roleplay 2 by Calgon and Brian.
+[10:38:47] Status: Loaded OnGameModeInit, running version 2.0.4 (r321)
+[10:38:47] -----------------------------------------------------------------
+[10:38:47] main() has been called.
+[10:38:47] Number of vehicle models: 0
+[10:38:47] [script] 227 vehicles loaded.
+[10:38:47] [script] 1 houses loaded.
+[10:39:06] Incoming connection: 127.0.0.1:52019
+[10:39:06] [join] Sam_Axe has joined the server (0:127.0.0.1)
+[10:39:24] [part] Sam_Axe has left the server (0:2)
+[10:40:44] Incoming connection: 127.0.0.1:58811
+[10:40:44] [join] Sam_Axe has joined the server (0:127.0.0.1)
+[10:42:10] [part] Sam_Axe has left the server (0:1)
+[10:42:30] Incoming connection: 127.0.0.1:58812
+[10:42:31] [join] Sam_Axe has joined the server (0:127.0.0.1)
+[10:42:46] [part] Sam_Axe has left the server (0:1)
