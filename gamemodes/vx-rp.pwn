@@ -1421,7 +1421,7 @@ stock getIdFromName(const szPlayerName2[]) {
 	} else return -1;
 }
 
-stock SendToGroup(groupid, colour, string[]) {
+stock SendToGroup(groupid, colour, const string[]) {
 	if(groupid > 0) {
 		foreach(Player, i) {
 			if(playerVariables[i][pStatus] == 1 && playerVariables[i][pGroup] == groupid) {
@@ -1481,8 +1481,10 @@ stock IsKeyJustDown(key, newkeys, oldkeys) {
 	return 0;
 }
 
-stock IsPlayerInInvalidNosVehicle(const playerid) {
-	switch(GetVehicleModel(GetPlayerVehicleID(playerid))) {
+stock IsInvalidNOSVehicle(const modelid)
+{
+	switch(modelid)
+	{
 		case 581, 523, 462, 521, 463, 522, 461, 448, 468, 586, 509, 481, 510, 472, 473, 493, 595, 484, 430, 453, 452, 446, 454, 590, 569, 537, 538, 570, 449: return true;
 	}
 	return false;
@@ -12133,66 +12135,77 @@ CMD:givearmour(playerid, params[]) {
 	return 1;
 }
 
-CMD:noscar(playerid, params[]) {
-	if(jobVariables[playerVariables[playerid][pJob]][jJobType] == 3) {
-		if(IsPlayerInAnyVehicle(playerid)) {
+CMD:noscar(playerid, params[]) 
+{
+	if(jobVariables[playerVariables[playerid][pJob]][jJobType] == 3) 
+	{
+		new vehicleID = GetPlayerVehicleID(playerid);
+		if(vehicleID != 0) 
+		{
+			new Float:soPos[3], vehicleModel = GetVehicleModel(vehicleID);
 
-			new
-				Float: soPos[3],
-				vehicleID = GetPlayerVehicleID(playerid);
-
-		    if(IsPlayerInInvalidNosVehicle(playerid)) {
-				format(szMessage, sizeof(szMessage), "You can't modify this %s.", VehicleNames[GetVehicleModel(vehicleID) - 400]);
+			if(IsInvalidNOSVehicle(vehicleModel)) 
+			{
+				format(szMessage, sizeof(szMessage), "You can't modify this %s.", VehicleNames[vehicleModel - 400]);
 		        SendClientMessage(playerid, COLOR_GREY, szMessage);
 		    }
-		    else if(playerVariables[playerid][pJobDelay] == 0) {
+		    else if(playerVariables[playerid][pJobDelay] == 0) 
+			{
 
 				GetVehiclePos(vehicleID, soPos[0], soPos[1], soPos[2]);
 				PlayerPlaySoundEx(1133, soPos[0], soPos[1], soPos[2]);
 
 				AddVehicleComponent(vehicleID, 1010);
-				format(szMessage, sizeof(szMessage), "You have applied nitrous to your %s for $1,000.", VehicleNames[GetVehicleModel(vehicleID) - 400]);
+				format(szMessage, sizeof(szMessage), "You have applied nitrous to your %s for $1,000.", VehicleNames[vehicleModel - 400]);
 				SendClientMessage(playerid, COLOR_WHITE, szMessage);
 				playerVariables[playerid][pMoney] -= 1000;
 				playerVariables[playerid][pJobDelay] = 60;
 		    }
-		    else {
+		    else 
+			{
 				format(szMessage, sizeof(szMessage), "You need to wait %d seconds until you can use a mechanic command again.",playerVariables[playerid][pJobDelay]);
 		        SendClientMessage(playerid, COLOR_GREY, szMessage);
 			}
 		}
-		else SendClientMessage(playerid, COLOR_GREY, "You're not in any vehicle.");
+		else
+			SendClientMessage(playerid, COLOR_GREY, "You're not in any vehicle.");
 	}
 	return 1;
 }
 
-CMD:hydcar(playerid, params[]) {
-	if(jobVariables[playerVariables[playerid][pJob]][jJobType] == 3) {
-		if(IsPlayerInAnyVehicle(playerid)) {
-			new
-				Float: soPos[3],
-				vehicleID = GetPlayerVehicleID(playerid);
+CMD:hydcar(playerid, params[]) 
+{
+	if(jobVariables[playerVariables[playerid][pJob]][jJobType] == 3) 
+	{
+		new vehicleID = GetPlayerVehicleID(playerid);
+		if(vehicleID != 0) 
+		{
+			new Float:soPos[3], vehicleModel = GetVehicleModel(vehicleID);
 
-		    if(IsPlayerInInvalidNosVehicle(playerid)) {
-				format(szMessage, sizeof(szMessage), "You can't modify this %s.", VehicleNames[GetVehicleModel(vehicleID) - 400]);
+			if(IsInvalidNOSVehicle(vehicleModel)) 
+			{
+				format(szMessage, sizeof(szMessage), "You can't modify this %s.", VehicleNames[vehicleModel - 400]);
 		        SendClientMessage(playerid, COLOR_GREY, szMessage);
 		    }
-		    else if(playerVariables[playerid][pJobDelay] == 0) {
+		    else if(playerVariables[playerid][pJobDelay] == 0) 
+			{
 				GetVehiclePos(vehicleID, soPos[0], soPos[1], soPos[2]);
 				PlayerPlaySoundEx(1133, soPos[0], soPos[1], soPos[2]);
 
-				AddVehicleComponent(GetPlayerVehicleID(playerid), 1087);
-				format(szMessage, sizeof(szMessage), "You have applied hydraulics to your %s for $1,000.", VehicleNames[GetVehicleModel(vehicleID) - 400]);
+				AddVehicleComponent(vehicleID, 1087);
+				format(szMessage, sizeof(szMessage), "You have applied hydraulics to your %s for $1,000.", VehicleNames[vehicleModel - 400]);
 				SendClientMessage(playerid, COLOR_WHITE, szMessage);
 				playerVariables[playerid][pMoney] -= 1000;
 				playerVariables[playerid][pJobDelay] = 60;
 		    }
-		    else {
+		    else 
+			{
 				format(szMessage, sizeof(szMessage), "You need to wait %d seconds until you can use a mechanic command again.",playerVariables[playerid][pJobDelay]);
 		        SendClientMessage(playerid, COLOR_GREY, szMessage);
 			}
 		}
-		else SendClientMessage(playerid, COLOR_GREY, "You're not in any vehicle.");
+		else 
+			SendClientMessage(playerid, COLOR_GREY, "You're not in any vehicle.");
 	}
 	return 1;
 }
