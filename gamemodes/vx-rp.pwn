@@ -1003,40 +1003,35 @@ stock loadATMs() {
 	return 1;
 }
 
-stock unixTimeConvert(timestamp, compare = -1) {
+stock unixTimeConvert(timestamp, compare = -1) 
+{
     if(compare == -1)
 		compare = gettime();
 
-    new
-        n,
-        Float:d = (timestamp > compare) ? timestamp - compare : compare - timestamp,
-        returnstr[32];
+    new n, returnstr[32];
+        Float:d = (timestamp > compare) ? (timestamp - compare) : (compare - timestamp);
 
-    if (d < 60) {
-        format(returnstr, sizeof(returnstr), "< 1 minute");
-        return returnstr;
-    } else if (d < 3600) { // 3600 = 1 hour
-        n = floatround(floatdiv(d, 60.0), floatround_floor);
-        format(returnstr, sizeof(returnstr), "minute");
-    } else if (d < 86400) { // 86400 = 1 day
-        n = floatround(floatdiv(d, 3600.0), floatround_floor);
-        format(returnstr, sizeof(returnstr), "hour");
-    } else if (d < 2592000) { // 2592000 = 1 month
-        n = floatround(floatdiv(d, 86400.0), floatround_floor);
-        format(returnstr, sizeof(returnstr), "day");
-    } else if (d < 31536000) { // 31536000 = 1 year
-        n = floatround(floatdiv(d, 2592000.0), floatround_floor);
-        format(returnstr, sizeof(returnstr), "month");
-    } else {
-        n = floatround(floatdiv(d, 31536000.0), floatround_floor);
-        format(returnstr, sizeof(returnstr), "year");
-    }
-
-    if (n == 1) {
-        format(returnstr, sizeof(returnstr), "1 %s", returnstr);
-    } else {
+	if(d < 60)
+	{
+		returnstr = "< 1 minute";
+		return returnstr;
+	}
+	else if(d < 3600)
+		n = floatround(floatdiv(d, 60.0), floatround_floor), returnstr = "minute";
+	else if(d < 86400)
+		n = floatround(floatdiv(d, 3600.0), floatround_floor), returnstr = "hour";
+	else if(d < 2592000)
+		n = floatround(floatdiv(d, 86400.0), floatround_floor), returnstr = "day";
+	else if(d < 31536000)
+		n = floatround(floatdiv(d, 2592000.0), floatround_floor), returnstr = "month";
+	else
+		n = floatround(floatdiv(d, 31536000.0), floatround_floor), returnstr = "year";
+	
+	if(n == 1)
+		format(returnstr, sizeof(returnstr), "1 %s", returnstr);
+    else
         format(returnstr, sizeof(returnstr), "%d %ss", n, returnstr);
-    }
+	
     return returnstr;
 }
 
