@@ -255,6 +255,7 @@
 #define 				SpeedCheck(%0,%1,%2,%3,%4) 				floatround(floatsqroot(%4?(%0*%0+%1*%1+%2*%2):(%0*%0+%1*%1) ) *%3*1.6)
 #define 				strcpy(%0,%1,%2) 						strcat((%0[0] = '\0', %0), %1, %2) // strcpy(dest, source, length)
 #define                 hidePlayerDialog(%0)                    ShowPlayerDialog(%0, -1, 0, " ", " ", "", "")
+#define					IsPlayerAuthed(%0)						(playerVariables[%0][pStatus] == 1)
 
 forward                 globalPlayerLoop();
 forward                 restartTimer();
@@ -400,7 +401,7 @@ enum playervEnum {
 	Float: pArmour,
 	Float: pPos[3],
 	pPassword[129],
-	pStatus,
+	pStatus, // -1: not connected | 0: connected, not authed | 1: connected, authed
 	pAge,
 	pMoney,
 	pAdminLevel,
@@ -1122,7 +1123,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 	
 	GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
 
-	if(playerVariables[playerid][pStatus] == 0)
+	if(playerVariables[playerid][pStatus] != 1)
 	    return 0;
 
 	printf("[server] [cmd] %s (ID %d): %s", szPlayerName, playerid, cmdtext);
@@ -1488,11 +1489,6 @@ stock IsInvalidNOSVehicle(const modelid)
 		case 581, 523, 462, 521, 463, 522, 461, 448, 468, 586, 509, 481, 510, 472, 473, 493, 595, 484, 430, 453, 452, 446, 454, 590, 569, 537, 538, 570, 449: return true;
 	}
 	return false;
-}
-
-stock IsPlayerConnectedEx(const playerid) {
-	if(IsPlayerConnected(playerid) && playerVariables[playerid][pStatus] == 1) return 1;
-	return 0;
 }
 
 stock givePlayerValidWeapon(playerid, weapon) {
@@ -2034,9 +2030,12 @@ stock removePlayerWeapon(playerid, weapon) {
 	return 1;
 }
 
-public antiCheat() {
-	foreach(Player, i) {
-	    if(playerVariables[i][pStatus] >= 1) {
+public antiCheat() 
+{
+	foreach(Player, i) 
+	{
+	    if(playerVariables[i][pStatus] == 1) 
+		{
 		    if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK && playerVariables[i][pJetpack] == 0 && playerVariables[i][pAdminLevel] < 1) {
 		        scriptBan(i, "Hacking (Jetpack)");
 		    }
@@ -3551,8 +3550,7 @@ stock showStats(playerid, targetid) {
 		else
 			param4 = "None";
 
-	    if(playerVariables[targetid][pStatus] != 1)
-			param1 = "Unauthenticated"; else param1 = "Authenticated";
+		param1 = (playerVariables[targetid][pStatus] != 1) ? ("Unauthenticated") : ("Authenticated");
 			
 		format(szMessage, sizeof(szMessage), "Status: %s | Admin Level: %d | Interior: %d | VW: %d | House: %d | Business: %d | Vehicle: %s", param1, playerVariables[targetid][pAdminLevel], playerVariables[targetid][pInterior], playerVariables[targetid][pVirtualWorld], getPlayerHouseID(targetid), getPlayerBusinessID(targetid), param4);
 		SendClientMessage(playerid, COLOR_WHITE, szMessage);
@@ -4897,7 +4895,6 @@ stock savePlayerData(const playerid) {
 		new
 		    saveQuery[3500];
 
-		if(playerVariables[playerid][pStatus] == -1) playerVariables[playerid][pStatus] = 0;
 		if(playerVariables[playerid][pCarModel] >= 1 && doesVehicleExist(playerVariables[playerid][pCarID])) {
 		    GetVehiclePos(playerVariables[playerid][pCarID], playerVariables[playerid][pCarPos][0], playerVariables[playerid][pCarPos][1], playerVariables[playerid][pCarPos][2]);
 		    GetVehicleZAngle(playerVariables[playerid][pCarID], playerVariables[playerid][pCarPos][3]);
@@ -4969,13 +4966,15 @@ public OnPlayerDisconnect(playerid, reason) {
 	    printf("[debug] OnPlayerDisconnect(%d, %d)", playerid, reason);
 	#endif
 	
-	if(playerVariables[playerid][pStatus] >= 1) {
+	if(playerVariables[playerid][pStatus] == 1) 
+	{
         //despawnPlayersVehicles(playerid);
         
-	    playerVariables[playerid][pStatus] = -1;
-		foreach(Player, x) {
-			if(playerVariables[x][pSpectating] == playerid) {
-
+	    playerVariables[playerid][pStatus] = -1; // Reset state to disconnected
+		foreach(Player, x) 
+		{
+			if(playerVariables[x][pSpectating] == playerid) 
+			{
 				playerVariables[x][pSpectating] = INVALID_PLAYER_ID;
 
 				TogglePlayerSpectating(x, false);
@@ -5609,11 +5608,14 @@ CMD:abandoncar(playerid, params[]) {
 CMD:givecar(playerid, params[]) {
 	if(sscanf(params, "u", iTarget))
 		SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/givecar [playerid]");
-
-	else if(IsPlayerConnectedEx(iTarget)) {
-		if(playerVariables[playerid][pCarModel] >= 1) {
-			if(IsPlayerInRangeOfPlayer(playerid, iTarget, 5.0)) {
-
+	else if(!IsPlayerAuthed(iTarget))
+		SendClientMessage(playerid, COLOR_GREY, "The specified player is not connected, or has not authenticated.");
+	else
+	{
+		if(playerVariables[playerid][pCarModel] >= 1) 
+		{
+			if(IsPlayerInRangeOfPlayer(playerid, iTarget, 5.0)) 
+			{
 				SetPVarInt(iTarget, "gC", playerid + 1);
 				// The usual culprit - barely accessed, barely used. As PVars return 0 if they don't exist, adding +1 ensures they return a valid playerid.
 
@@ -5631,7 +5633,6 @@ CMD:givecar(playerid, params[]) {
 		}
 		else SendClientMessage(playerid, COLOR_GREY, "You don't own a vehicle.");
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "The specified player is not connected, or has not authenticated.");
 	return 1;
 }
 
@@ -7286,7 +7287,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
             	    SendClientMessage(playerid, COLOR_GREY, "Invalid name specified (use a proper player name or ID).");
             	}
 				else {
-				    if(IsPlayerConnectedEx(id)) {
+				    if(IsPlayerAuthed(id)) {
             			if(playerVariables[id][pPrisonTime] > 0 && playerVariables[id][pPrisonID] == 3) {
 				            new
 								Rstring[58],
@@ -7332,7 +7333,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
             	if(sscanf(inputtext,"u",warrantid))
 					return SendClientMessage(playerid, COLOR_GREY, "Invalid name specified (use a proper player name or ID).");
 
-				else if(IsPlayerConnectedEx(warrantid)) {
+				else if(IsPlayerAuthed(warrantid)) {
 					new
 						WarrantplayerNames[2][MAX_PLAYER_NAME];
 
@@ -8057,7 +8058,7 @@ getPlayerBusinessID(const playerid) {
 }
 
 stock resetPlayerVariables(const playerid) {
-	playerVariables[playerid][pStatus] = 0; // 0 - Unauthentic | 1 - Authentic
+	playerVariables[playerid][pStatus] = 0; // Not authenticated, but connected
 	playerVariables[playerid][pSeconds] = 0;
 	playerVariables[playerid][pSkin] = 299;
 	playerVariables[playerid][pSkinCount] = 0;
@@ -8359,7 +8360,7 @@ public globalPlayerLoop() {
 				}
 			}
             if(playerVariables[x][pBackup] != -1) {
-                if(IsPlayerConnectedEx(playerVariables[x][pBackup])) {
+                if(IsPlayerAuthed(playerVariables[x][pBackup])) {
                     GetPlayerPos(playerVariables[x][pBackup], playerVariables[playerVariables[x][pBackup]][pPos][0], playerVariables[playerVariables[x][pBackup]][pPos][1], playerVariables[playerVariables[x][pBackup]][pPos][2]);
                     SetPlayerCheckpoint(x, playerVariables[playerVariables[x][pBackup]][pPos][0], playerVariables[playerVariables[x][pBackup]][pPos][1], playerVariables[playerVariables[x][pBackup]][pPos][2], 10.0);
                 }
@@ -8373,7 +8374,7 @@ public globalPlayerLoop() {
             }
 
 			if(playerVariables[x][pDrag] != -1) { // Considering how slow SetPlayerPos works in practice, using a 1000ms timer in lieu of OnPlayerUpdate (the old script) is a better idea.
-				if(IsPlayerConnectedEx(playerVariables[x][pDrag])) {
+				if(IsPlayerAuthed(playerVariables[x][pDrag])) {
 					switch(GetPlayerState(playerVariables[x][pDrag])) { // If they're not on foot, they're not gonna be dragging anything...
 						case 1: { // on foot
 							GetPlayerPos(playerVariables[x][pDrag], playerVariables[x][pPos][0], playerVariables[x][pPos][1], playerVariables[x][pPos][2]);
@@ -8646,7 +8647,7 @@ CMD:explode(playerid, params[]) {
 		if(sscanf(params, "u", ID)) {
 			return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/explode [playerid]");
 		}
-	    else if(IsPlayerConnectedEx(ID)) {
+	    else if(IsPlayerAuthed(ID)) {
 			if(playerVariables[playerid][pAdminLevel] >= playerVariables[ID][pAdminLevel]) {
 
 				new
@@ -8707,7 +8708,7 @@ CMD:sethelper(playerid, params[]) {
 		if(sscanf(params, "ud", ID, level))
 			return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/sethelper [playerid] [level]");
 
-	    if(IsPlayerConnectedEx(ID)) {
+	    if(IsPlayerAuthed(ID)) {
 			if(level >= 0 && level <= 4) {
 				new
 					string[79];
@@ -10442,7 +10443,7 @@ CMD:confiscate(playerid, params[])
 			SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/confiscate [playerid] [item]");
 			SendClientMessage(playerid, COLOR_GREY, "Items: Materials, Phone, Weapons");
 		}
-		else if(IsPlayerConnectedEx(targetID)){
+		else if(IsPlayerAuthed(targetID)){
 			if(IsPlayerInRangeOfPlayer(playerid, targetID, 3.0)) {
 				if(playerVariables[targetID][pFreezeType] == 2 || playerVariables[targetID][pFreezeType] == 4 || (GetPlayerSpecialAction(targetID) == SPECIAL_ACTION_HANDSUP && playerVariables[targetID][pFreezeType] == 0)) {
 					if(!strcmp(item, "materials", true)) {
@@ -10848,7 +10849,7 @@ CMD:fingerprint(playerid, params[]) {
 	if(sscanf(params, "u", targetID)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/fingerprint [playerid]");
 
 	else if(groupVariables[playerVariables[playerid][pGroup]][gGroupType] == 1) {
-		if(IsPlayerConnectedEx(targetID)) {
+		if(IsPlayerAuthed(targetID)) {
 			if(playerVariables[targetID][pFreezeType] == 2 || playerVariables[targetID][pFreezeType] == 4 || (GetPlayerSpecialAction(targetID) == SPECIAL_ACTION_HANDSUP && playerVariables[targetID][pFreezeType] == 0)) {
 				if(IsPlayerInRangeOfPlayer(playerid, targetID, 2.0)) {
 
@@ -10946,7 +10947,7 @@ CMD:ticket(playerid, params[]) {
 	if(sscanf(params, "ud", targetID, price)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/ticket [playerid] [price]");
 
 	else if(groupVariables[playerVariables[playerid][pGroup]][gGroupType] == 1) {
-		if(IsPlayerConnectedEx(targetID)) {
+		if(IsPlayerAuthed(targetID)) {
 			if(playerid != targetID) {
 				if(IsPlayerInRangeOfPlayer(playerid, targetID, 3.0)) {
 					if(price >= 1 && price <= 100000) {
@@ -10993,7 +10994,7 @@ CMD:su(playerid, params[]) {
 		return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/su [playerid] [offence]");
 
 	else if(groupVariables[playerVariables[playerid][pGroup]][gGroupType] == 1) {
-		if(IsPlayerConnectedEx(targetID)) {
+		if(IsPlayerAuthed(targetID)) {
 			if(groupVariables[playerVariables[targetID][pGroup]][gGroupType] != 1) {
 
 				GetPlayerName(playerid, playerName[0], MAX_PLAYER_NAME);
@@ -11307,7 +11308,7 @@ CMD:wiretransfer(playerid, params[]) {
 	        return 1;
 
 		if(playerVariables[playerid][pPlayingHours] >= 10) {
-			if(IsPlayerConnectedEx(targetID)) {
+			if(IsPlayerAuthed(targetID)) {
 				if(playerVariables[playerid][pBankMoney] >= cash) {
 					if(cash >= 1) {
 
@@ -11495,7 +11496,7 @@ CMD:trackhouse(playerid, params[]) {
 
 	else if(jobVariables[playerVariables[playerid][pJob]][jJobType] == 2) {
 	    if(playerVariables[playerid][pJobSkill][1] >= 400) {
-	        if(IsPlayerConnectedEx(id)) {
+	        if(IsPlayerAuthed(id)) {
 
 				if(id == playerid)
 					return SendClientMessage(playerid, COLOR_GREY, "Use /home to set a checkpoint to your house.");
@@ -11587,7 +11588,7 @@ CMD:trackbusiness(playerid, params[]) {
 
 	else if(jobVariables[playerVariables[playerid][pJob]][jJobType] == 2) {
 	    if(playerVariables[playerid][pJobSkill][1] >= 400) {
-	        if(IsPlayerConnectedEx(id)) {
+	        if(IsPlayerAuthed(id)) {
 
 				if(id == playerid) return SendClientMessage(playerid, COLOR_GREY, "Use /business to set a checkpoint to your business.");
 
@@ -11641,7 +11642,7 @@ CMD:trackcar(playerid, params[]) {
 	else if(jobVariables[playerVariables[playerid][pJob]][jJobType] == 2)
 	{
 	    if(playerVariables[playerid][pJobSkill][1] >= 250) {
-	        if(IsPlayerConnectedEx(id)) {
+	        if(IsPlayerAuthed(id)) {
 
 				if(id == playerid) return SendClientMessage(playerid, COLOR_GREY, "Use /findcar to track your own vehicle.");
 
@@ -11682,68 +11683,70 @@ CMD:trackcar(playerid, params[]) {
 	return 1;
 }
 
-CMD:track(playerid, params[]) {
-	new
-		id,
-		string[128],
-		Float:FindFloats[3];
+CMD:track(playerid, params[]) 
+{
+	new string[128];
+	if(playerVariables[playerid][pJobDelay] >= 1)
+	{
+		format(string,sizeof(string),"You need to wait %d seconds until you can use a detective command again.",playerVariables[playerid][pJobDelay]);
+		SendClientMessage(playerid, COLOR_GREY, string);
+	}
+	if(playerVariables[playerid][pCheckpoint] >= 2) 
+	{ 
+		// Having to reach the first find checkpoint is pretty annoying. Let's make it hassle-free.
+		format(string, sizeof(string), "You already have an active checkpoint (%s), reach it first, or /killcheckpoint.", getPlayerCheckpointReason(playerid));
+		SendClientMessage(playerid, COLOR_GREY,string);
+	}
+	
+	new id, Float:FindFloats[3];
 
 	if(sscanf(params, "u", id))
 		return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/track [playerid]");
+	else if(id == playerid)
+		return SendClientMessage(playerid, COLOR_GREY, "You can't track yourself.");
+	else if(playerVariables[id][pStatus] != 1)
+		return SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
+	else if(jobVariables[playerVariables[playerid][pJob]][jJobType] == 2)
+	{
+	    if(GetPlayerInterior(id) >= 1 || GetPlayerVirtualWorld(id) >= 1 || playerVariables[id][pSpectating] != INVALID_PLAYER_ID)
+			SendClientMessage(playerid, COLOR_GREY, "That player is an alternate interior or virtual world.");
+		else if(playerVariables[id][pAdminDuty] >= 1)
+			SendClientMessage(playerid, COLOR_GREY, "You can't track this person at the moment.");
+		else 
+		{
+			GetPlayerPos(id, FindFloats[0], FindFloats[1], FindFloats[2]);
+			SetPlayerCheckpoint(playerid, FindFloats[0], FindFloats[1], FindFloats[2], 5.0);
 
-	else {
-	    if(jobVariables[playerVariables[playerid][pJob]][jJobType] == 2) {
-	        if(IsPlayerConnected(id) && playerVariables[id][pStatus] != 0) {
+			format(string, sizeof(string), "A checkpoint has been set, %s was last seen at the marked area.", playerVariables[id][pNormalName]);
+			SendClientMessage(playerid, COLOR_WHITE, string);
 
-				if(id == playerid) return SendClientMessage(playerid, COLOR_GREY, "You can't track yourself.");
+			playerVariables[playerid][pCheckpoint] = 1;
 
-	            if(playerVariables[playerid][pJobDelay] >= 1) {
-	                format(string,sizeof(string),"You need to wait %d seconds until you can use a detective command again.",playerVariables[playerid][pJobDelay]);
-	                SendClientMessage(playerid, COLOR_GREY, string);
-	            }
-	            else if(playerVariables[playerid][pCheckpoint] >= 2) { // Having to reach the first find checkpoint is pretty annoying. Let's make it hassle-free.
-					format(string, sizeof(string), "You already have an active checkpoint (%s), reach it first, or /killcheckpoint.", getPlayerCheckpointReason(playerid));
-					SendClientMessage(playerid, COLOR_GREY,string);
+			switch(playerVariables[playerid][pJobSkill][1]) {
+				case 0 .. 49: playerVariables[playerid][pJobDelay] = 120;
+				case 50 .. 99: playerVariables[playerid][pJobDelay] = 110;
+				case 100 .. 149: playerVariables[playerid][pJobDelay] = 100;
+				case 150 .. 199: playerVariables[playerid][pJobDelay] = 90;
+				case 200 .. 249: playerVariables[playerid][pJobDelay] = 80;
+				case 250 .. 299: playerVariables[playerid][pJobDelay] = 70;
+				case 300 .. 349: playerVariables[playerid][pJobDelay] = 60;
+				case 350 .. 399: playerVariables[playerid][pJobDelay] = 50;
+				case 400 .. 449: playerVariables[playerid][pJobDelay] = 40;
+				case 450 .. 499: playerVariables[playerid][pJobDelay] = 30;
+				default: playerVariables[playerid][pJobDelay] = 20;
+			}
+
+			playerVariables[playerid][pJobSkill][1] ++;
+
+			switch(playerVariables[playerid][pJobSkill][1]) 
+			{
+				case 50, 100, 150, 200, 250, 300, 350, 400, 450, 500: 
+				{
+					format(string,sizeof(string),"Congratulations! Your detective skill level is now %d. You will now have a lower delay between each track attempt.",playerVariables[playerid][pJobSkill][1]/50);
+					SendClientMessage(playerid,COLOR_WHITE,string);
 				}
-				else if(GetPlayerInterior(id) >= 1 || GetPlayerVirtualWorld(id) >= 1 || playerVariables[id][pSpectating] != INVALID_PLAYER_ID)
-					SendClientMessage(playerid, COLOR_GREY, "That player is an alternate interior or virtual world.");
-				else if(playerVariables[id][pAdminDuty] >= 1)
-					SendClientMessage(playerid, COLOR_GREY, "You can't track this person at the moment.");
-				else {
-					GetPlayerPos(id, FindFloats[0], FindFloats[1], FindFloats[2]);
-					SetPlayerCheckpoint(playerid, FindFloats[0], FindFloats[1], FindFloats[2], 5.0);
-
-					format(string, sizeof(string), "A checkpoint has been set, %s was last seen at the marked area.", playerVariables[id][pNormalName]);
-					SendClientMessage(playerid, COLOR_WHITE, string);
-
-					playerVariables[playerid][pCheckpoint] = 1;
-
-					switch(playerVariables[playerid][pJobSkill][1]) {
-						case 0 .. 49: playerVariables[playerid][pJobDelay] = 120;
-						case 50 .. 99: playerVariables[playerid][pJobDelay] = 110;
-						case 100 .. 149: playerVariables[playerid][pJobDelay] = 100;
-						case 150 .. 199: playerVariables[playerid][pJobDelay] = 90;
-						case 200 .. 249: playerVariables[playerid][pJobDelay] = 80;
-						case 250 .. 299: playerVariables[playerid][pJobDelay] = 70;
-						case 300 .. 349: playerVariables[playerid][pJobDelay] = 60;
-						case 350 .. 399: playerVariables[playerid][pJobDelay] = 50;
-						case 400 .. 449: playerVariables[playerid][pJobDelay] = 40;
-						case 450 .. 499: playerVariables[playerid][pJobDelay] = 30;
-						default: playerVariables[playerid][pJobDelay] = 20;
-					}
-
-					playerVariables[playerid][pJobSkill][1]++;
-
-					switch(playerVariables[playerid][pJobSkill][1]) {
-						case 50, 100, 150, 200, 250, 300, 350, 400, 450, 500: {
-							format(string,sizeof(string),"Congratulations! Your detective skill level is now %d. You will now have a lower delay between each track attempt.",playerVariables[playerid][pJobSkill][1]/50);
-							SendClientMessage(playerid,COLOR_WHITE,string);
-						}
-					}
-	            }
-	        }
-			else SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-	    }
+			}
+		}
 	}
 	return 1;
 }
@@ -12291,7 +12294,7 @@ CMD:newbie(playerid, params[]) {
 			playerVariables[playerid][pNewbieTimeout] = 30;
 		}
 		foreach(Player, x) {
-			if(playerVariables[x][pStatus] >= 1 && playerVariables[x][pNewbieEnabled] == 1) {
+			if(playerVariables[x][pStatus] == 1 && playerVariables[x][pNewbieEnabled] == 1) {
 				SendClientMessage(x, COLOR_NEWBIE, szMessage);
 			}
 		}
@@ -12319,7 +12322,7 @@ CMD:listmygroup(playerid, params[]) {
 		SendClientMessage(playerid, COLOR_TEAL, "----------------------------------------------------------------");
 
 		foreach(Player, i) {
-	        if(IsPlayerConnectedEx(i) && playerVariables[i][pGroup] == playerVariables[playerid][pGroup] && playerVariables[i][pAdminDuty] < 1) {
+	        if(IsPlayerAuthed(i) && playerVariables[i][pGroup] == playerVariables[playerid][pGroup] && playerVariables[i][pAdminDuty] < 1) {
 
 				switch(playerVariables[i][pGroupRank]) {
 					case 1: format(szMessage, sizeof(szMessage), "* (%d) %s %s", playerVariables[i][pGroupRank], groupVariables[playerVariables[i][pGroup]][gGroupRankName1], playerVariables[i][pNormalName]);
@@ -12354,7 +12357,7 @@ CMD:set(playerid, params[]) {
 			SendClientMessage(playerid, COLOR_GREY, "Items: Health, Armour, Money, BankMoney, Skin, Interior, VirtualWorld, Job, JobSkill1, JobSkill2,");
 			SendClientMessage(playerid, COLOR_GREY, "Phone, Materials, Group, GroupRank, Age, Gender");
 		}
-        else if(IsPlayerConnectedEx(userID)) {
+        else if(IsPlayerAuthed(userID)) {
             if(playerVariables[playerid][pAdminLevel] >= playerVariables[userID][pAdminLevel]) {
 				GetPlayerName(userID, szPlayerName, MAX_PLAYER_NAME);
 
@@ -12812,7 +12815,7 @@ CMD:accept(playerid, params[]) {
 				ticketNames[2][MAX_PLAYER_NAME];
 
 			if(ticketer != -1 && ticketPrice > 0) {
-				if(IsPlayerConnectedEx(ticketer)) {
+				if(IsPlayerAuthed(ticketer)) {
 					if(IsPlayerInRangeOfPlayer(playerid, ticketer, 3.0)) {
 						if(playerVariables[playerid][pMoney] >= ticketPrice) {
 
@@ -12862,7 +12865,7 @@ CMD:accept(playerid, params[]) {
 				giveCarPlayerName[2][MAX_PLAYER_NAME];
 
 		    if(playerCarOffer != -1) {
-		        if(IsPlayerConnectedEx(playerCarOffer)) {
+		        if(IsPlayerAuthed(playerCarOffer)) {
 					if(playerVariables[playerid][pCarModel] < 1) {
 						if(IsPlayerInRangeOfPlayer(playerid, playerCarOffer, 5.0)) {
 							GetVehiclePos(playerVariables[playerCarOffer][pCarID], playerVariables[playerid][pCarPos][0], playerVariables[playerid][pCarPos][1], playerVariables[playerid][pCarPos][2]);
@@ -12953,7 +12956,7 @@ CMD:accept(playerid, params[]) {
 						shakeOffer = GetPVarInt(playerid,"hsID"),
 						shakeStyle = GetPVarInt(playerid,"hs");
 
-					if(!IsPlayerConnectedEx(shakeOffer)) return 1;
+					if(!IsPlayerAuthed(shakeOffer)) return 1;
 
 					PlayerFacePlayer(playerid, shakeOffer);
 		            GetPlayerPos(shakeOffer, PosFloats[0], PosFloats[1], PosFloats[2]);
@@ -13164,30 +13167,23 @@ CMD:pm(playerid, params[])
 		message[128],
 		id;
 
-	if(sscanf(params, "us[128]", id, message)) {
+	if(sscanf(params, "us[128]", id, message))
 		SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/pm [playerid] [message]");
-	}
-	else {
-	    if(IsPlayerConnected(id) && playerVariables[id][pStatus] >= 1) {
-			if(playerVariables[id][pPMStatus] == 0) {
-			    GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
+	else if(playerVariables[id][pStatus] != 1)
+		SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
+	else if(playerVariables[id][pPMStatus] != 0)
+		SendClientMessage(playerid, COLOR_GREY, "That player's PMs aren't enabled.");
+	else
+	{
+		GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
 
-			    format(szMessage, sizeof(szMessage), "(( PM from %s: %s ))", szPlayerName, message);
-			    SendClientMessage(id, COLOR_YELLOW, szMessage);
+		format(szMessage, sizeof(szMessage), "(( PM from %s: %s ))", szPlayerName, message);
+		SendClientMessage(id, COLOR_YELLOW, szMessage);
 
-			    GetPlayerName(id, szPlayerName, MAX_PLAYER_NAME);
+		GetPlayerName(id, szPlayerName, MAX_PLAYER_NAME);
 
-			    format(szMessage, sizeof(szMessage), "(( PM sent to %s: %s ))", szPlayerName, message);
-			    SendClientMessage(playerid, COLOR_GREY, szMessage);
-			}
-			else {
-				return SendClientMessage(playerid, COLOR_GREY, "That player's PMs aren't enabled.");
-			}
-	    }
-	    else
-	    {
-	        SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-	    }
+		format(szMessage, sizeof(szMessage), "(( PM sent to %s: %s ))", szPlayerName, message);
+		SendClientMessage(playerid, COLOR_GREY, szMessage);
     }
 	return 1;
 }
@@ -13204,35 +13200,32 @@ CMD:whisper(playerid, params[]) {
 	if(sscanf(params, "us[128]", id, message)) {
 		SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/whisper [playerid] [message]");
 	}
-	else {
-	    if(IsPlayerConnected(id) && playerVariables[id][pStatus] >= 1) {
-			if(IsPlayerInRangeOfPlayer(playerid, id, 2.0)) {
-				if(playerVariables[id][pSeeWhisper] == 0) {
-					new
-						giveplayerName[MAX_PLAYER_NAME];
+	else if(playerVariables[id][pStatus] != 1)
+	{
+		SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
+	}
+	else if(playerVariables[id][pSeeWhisper] != 0) 
+	{
+		SendClientMessage(playerid, COLOR_GREY, "That player's whispers aren't enabled.");
+	}
+	else if(!IsPlayerInRangeOfPlayer(playerid, id, 2.0))
+	{
+		SendClientMessage(playerid, COLOR_GREY, "You're too far away.");
+	}
+	{
+		new
+			giveplayerName[MAX_PLAYER_NAME];
+		GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
+		format(szMessage, sizeof(szMessage), "%s whispers: %s", szPlayerName, message);
+		SendClientMessage(id, COLOR_NICESKY, szMessage);
 
-					GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
+		GetPlayerName(id, giveplayerName, MAX_PLAYER_NAME);
 
-					format(szMessage, sizeof(szMessage), "%s whispers: %s", szPlayerName, message);
-					SendClientMessage(id, COLOR_NICESKY, szMessage);
+		format(szMessage, sizeof(szMessage), "You whisper to %s: %s", giveplayerName, message);
+		SendClientMessage(playerid, COLOR_NICESKY, szMessage);
 
-					GetPlayerName(id, giveplayerName, MAX_PLAYER_NAME);
-
-					format(szMessage, sizeof(szMessage), "You whisper to %s: %s", giveplayerName, message);
-					SendClientMessage(playerid, COLOR_NICESKY, szMessage);
-
-					format(szMessage, sizeof(szMessage), "* %s whispers something to %s.", szPlayerName, giveplayerName);
-					nearByMessage(playerid, COLOR_PURPLE, szMessage, 2.0);
-				}
-				else SendClientMessage(playerid, COLOR_GREY, "You're too far away.");
-			}
-			else {
-				SendClientMessage(playerid, COLOR_GREY, "That player's whispers aren't enabled.");
-			}
-	    }
-	    else {
-	        SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-	    }
+		format(szMessage, sizeof(szMessage), "* %s whispers something to %s.", szPlayerName, giveplayerName);
+		nearByMessage(playerid, COLOR_PURPLE, szMessage, 2.0);
     }
 	return 1;
 }
@@ -13743,7 +13736,7 @@ public OnPlayerClickPlayer(playerid, clickedplayerid, source) {
 	
     if(playerVariables[playerid][pAdminLevel] >= 1) {
 
-		    if(!IsPlayerConnectedEx(clickedplayerid))
+		    if(!IsPlayerAuthed(clickedplayerid))
 				return SendClientMessage(playerid, COLOR_GREY, "The specified player is not connected, or has not authenticated.");
 
 			if(playerVariables[playerid][pSpectating] == INVALID_PLAYER_ID) {
@@ -13783,7 +13776,7 @@ CMD:spec(playerid, params[]) {
 		if(sscanf(params, "u", userID)) {
 		    return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/spec [playerid]");
 		}
-		else if(!IsPlayerConnectedEx(userID)) {
+		else if(!IsPlayerAuthed(userID)) {
 		    return SendClientMessage(playerid, COLOR_GREY, "The specified player is not connected, or has not authenticated.");
 		}
 		else {
@@ -15412,39 +15405,36 @@ CMD:reports(playerid, params[]) {
 		        if(sscanf(params, "s[16]u", tool, userID)) {
 		            SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/reports accept [playerid]");
 		        }
-		        else {
-		            if(!IsPlayerConnected(userID) || playerVariables[userID][pStatus] == 0) {
-		                SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-		            }
-		            else
-		            {
-		                if(playerVariables[userID][pReport] >= 1) {
-		                    new
+				else if(playerVariables[userID][pStatus] != 1)
+		        {
+					SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
+		        }
+		        else if(playerVariables[userID][pReport] == 0)
+		        {
+					SendClientMessage(playerid, COLOR_GREY, "That player doesn't have an active report.");
+				}
+				else
+				{
+					new
+						string[128];
 
-								string[128];
+					GetPlayerName(userID, szPlayerName, MAX_PLAYER_NAME);
 
-							GetPlayerName(userID, szPlayerName, MAX_PLAYER_NAME);
+		            format(string, sizeof(string), "You have accepted %s's report (%s)", szPlayerName, playerVariables[userID][pReportMessage]);
+		            SendClientMessage(playerid, COLOR_WHITE, string);
 
-		                    format(string, sizeof(string), "You have accepted %s's report (%s)", szPlayerName, playerVariables[userID][pReportMessage]);
-		                    SendClientMessage(playerid, COLOR_WHITE, string);
+		            playerVariables[userID][pReport] = 0;
+		            format(playerVariables[userID][pReportMessage], 64, "(null)");
 
-		                    playerVariables[userID][pReport] = 0;
-		                    format(playerVariables[userID][pReportMessage], 64, "(null)");
+		            GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
 
-		                    GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
+		            format(string, sizeof(string), "Thank you for your report! Administrator %s is now reviewing your report.", szPlayerName);
+		            SendClientMessage(userID, COLOR_YELLOW, string);
 
-		                    format(string, sizeof(string), "Thank you for your report! Administrator %s is now reviewing your report.", szPlayerName);
-		                    SendClientMessage(userID, COLOR_YELLOW, string);
-
-		                    SetPVarInt(playerid, "aR", 1);
-		                    SetPVarInt(playerid, "aRf", userID);
-
-		                    ShowPlayerDialog(playerid, DIALOG_REPORT, DIALOG_STYLE_LIST, "Report System", "Teleport\nSpectate\nTake no action", "Select", "Exit");
-		                }
-		                else {
-		                    SendClientMessage(playerid, COLOR_GREY, "That player doesn't have an active report.");
-		                }
-		            }
+		            SetPVarInt(playerid, "aR", 1);
+		            SetPVarInt(playerid, "aRf", userID);
+					
+					ShowPlayerDialog(playerid, DIALOG_REPORT, DIALOG_STYLE_LIST, "Report System", "Teleport\nSpectate\nTake no action", "Select", "Exit");
 		        }
 		    }
 		    else if(strcmp(tool, "Disregard", true) == 0) {
@@ -15455,24 +15445,23 @@ CMD:reports(playerid, params[]) {
 		        if(sscanf(params, "s[16]u", tool, userID)) {
 		            SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/reports disregard [playerid]");
 		        }
-		        else {
-		            if(!IsPlayerConnected(userID) || playerVariables[userID][pStatus] == 0) {
-		                SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-		            }
-		            else {
-		                if(playerVariables[userID][pReport] != 0) {
-							GetPlayerName(userID, szPlayerName, MAX_PLAYER_NAME);
+				else if(playerVariables[userID][pStatus] != 1)
+		        {
+					SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
+		        }
+				else if(playerVariables[userID][pReport] == 0)
+		        {
+					SendClientMessage(playerid, COLOR_GREY, "That player doesn't have an active report.");
+				}
+		        else 
+				{
+					GetPlayerName(userID, szPlayerName, MAX_PLAYER_NAME);
 
-		                    playerVariables[userID][pReport] = 0;
-		                    format(playerVariables[userID][pReportMessage], 64, "(null)");
+		            playerVariables[userID][pReport] = 0;
+		            format(playerVariables[userID][pReportMessage], 64, "(null)");
 
-		                    format(string, sizeof(string), "You have disregarded %s's report.", szPlayerName);
-		                    SendClientMessage(playerid, COLOR_WHITE, string);
-		                }
-		                else {
-		                    SendClientMessage(playerid, COLOR_GREY, "That player doesn't have an active report.");
-		                }
-		            }
+		            format(string, sizeof(string), "You have disregarded %s's report.", szPlayerName);
+		            SendClientMessage(playerid, COLOR_WHITE, string);
 		        }
 		    }
 		    else if(strcmp(tool, "Status", true) == 0) {
@@ -15564,8 +15553,10 @@ CMD:ooc(playerid, params[]) {
 		return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/(o)oc [message]");
 }
 
-CMD:seeooc(playerid, params[]) {
-    if(playerVariables[playerid][pStatus] >= 1) {
+CMD:seeooc(playerid, params[]) 
+{
+    if(playerVariables[playerid][pStatus] == 1) 
+	{
 		if(playerVariables[playerid][pSeeOOC] == 1) {
 		    playerVariables[playerid][pSeeOOC] = 0;
 		    SendClientMessage(playerid, COLOR_WHITE, "You will no longer see any chat submitted to the public OOC channel.");
@@ -15578,27 +15569,35 @@ CMD:seeooc(playerid, params[]) {
 	return 1;
 }
 
-CMD:disableooc(playerid, params[]) {
-    if(playerVariables[playerid][pAdminLevel] >= 2) {
-        if(systemVariables[OOCStatus] == 0) {
+CMD:disableooc(playerid, params[]) 
+{
+    if(playerVariables[playerid][pAdminLevel] >= 2) 
+	{
+        if(systemVariables[OOCStatus] == 0) 
+		{
 		    systemVariables[OOCStatus] = 1;
 		    SendClientMessageToAll(COLOR_LIGHTRED, "The OOC chat channel has been disabled.");
         }
-        else {
-			return SendClientMessage(playerid, COLOR_GREY, "OOC is already disbled.");
+        else 
+		{
+			SendClientMessage(playerid, COLOR_GREY, "OOC is already disbled.");
 		}
     }
 	return 1;
 }
 
-CMD:enableooc(playerid, params[]) {
-    if(playerVariables[playerid][pAdminLevel] >= 2) {
-        if(systemVariables[OOCStatus] == 1) {
+CMD:enableooc(playerid, params[]) 
+{
+    if(playerVariables[playerid][pAdminLevel] >= 2) 
+	{
+        if(systemVariables[OOCStatus] == 1) 
+		{
 		    systemVariables[OOCStatus] = 0;
 		    SendClientMessageToAll(COLOR_LIGHTRED, "The OOC chat channel has been enabled.");
         }
-        else {
-			return SendClientMessage(playerid, COLOR_GREY, "OOC is already enabled.");
+        else 
+		{
+			SendClientMessage(playerid, COLOR_GREY, "OOC is already enabled.");
 		}
     }
 	return 1;
@@ -15618,18 +15617,23 @@ CMD:namechanges(playerid, params[]) {
 	return 1;
 }
 
-CMD:changename(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 4) {
+CMD:changename(playerid, params[]) 
+{
+	if(playerVariables[playerid][pAdminLevel] >= 4) 
+	{
 		new
 			newName[MAX_PLAYER_NAME];
 
-		if(sscanf(params, "us[24]", iTarget, newName)) {
-			return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/changename [playerid] [newname]");
+		if(sscanf(params, "us[24]", iTarget, newName)) 
+		{
+			SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/changename [playerid] [newname]");
 		}
-		else {
-			if(iTarget == INVALID_PLAYER_ID || playerVariables[playerid][pStatus] < 1)
-		    	return SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-
+		else if(playerVariables[iTarget][pStatus] != 1)
+		{
+			SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
+		}
+		else 
+		{
 			if(getPlayerBusinessID(iTarget) >= 1)
 				strcpy(businessVariables[getPlayerBusinessID(iTarget)][bOwner], newName, MAX_PLAYER_NAME);
 
@@ -15711,20 +15715,27 @@ CMD:ah(playerid, params[]) {
 	return cmd_ahelp(playerid, params);
 }
 
-CMD:jail(playerid, params[]) {
-    if(playerVariables[playerid][pAdminLevel] >= 2) {
+CMD:jail(playerid, params[]) 
+{
+    if(playerVariables[playerid][pAdminLevel] >= 2) 
+	{
         new
             minutes,
             userID,
             reason[64];
 
-        if(sscanf(params, "uds[64]", userID, minutes, reason)) {
-			return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/jail [playerid] [minutes] [reason]");
+        if(sscanf(params, "uds[64]", userID, minutes, reason)) 
+		{
+			SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/jail [playerid] [minutes] [reason]");
 		}
-		else {
-			if(!IsPlayerConnected(userID)) return SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-
-			if(minutes == 0) {
+		else if(playerVariables[playerid][pStatus] != 1)
+		{
+			SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
+		}
+		else 
+		{
+			if(minutes == 0) 
+			{
 	            GetPlayerName(userID, szPlayerName, MAX_PLAYER_NAME);
 
 	            format(szMessage, sizeof(szMessage), "Release: %s has been released from prison by %s, reason: %s", szPlayerName, playerVariables[playerid][pAdminName], reason);
@@ -15739,7 +15750,8 @@ CMD:jail(playerid, params[]) {
 				SetPlayerVirtualWorld(userID, 0);
 			}
 
-			if(playerVariables[playerid][pAdminLevel] >= playerVariables[userID][pAdminLevel]) {
+			if(playerVariables[playerid][pAdminLevel] >= playerVariables[userID][pAdminLevel])
+			{
 				GetPlayerName(userID, szPlayerName, MAX_PLAYER_NAME);
 			    format(szMessage, sizeof(szMessage), "Jail: %s has been jailed by %s, reason: %s (%d minutes).", szPlayerName, playerVariables[playerid][pAdminName], reason, minutes);
 				SendClientMessageToAll(COLOR_LIGHTRED, szMessage);
@@ -15751,8 +15763,9 @@ CMD:jail(playerid, params[]) {
 				SetPlayerInterior(userID, 6);
 				SetPlayerVirtualWorld(userID, 0);
 			}
-			else {
-				return SendClientMessage(playerid, COLOR_GREY, "You can't jail a higher level administrator.");
+			else 
+			{
+				SendClientMessage(playerid, COLOR_GREY, "You can't jail a higher level administrator.");
 			}
 		}
 	}
@@ -15765,13 +15778,16 @@ CMD:release(playerid, params[]) {
             reason[64],
             targetid;
 
-        if(sscanf(params, "us[64]", targetid, reason)) {
-            return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/release [playerid] [reason]");
+        if(sscanf(params, "us[64]", targetid, reason))
+		{
+            SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/release [playerid] [reason]");
         }
-        else {
-            if(targetid == INVALID_PLAYER_ID)
-				return SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-
+		else if(playerVariables[targetid][pStatus] != 1)
+        {
+			SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
+		}
+		else
+		{
             GetPlayerName(targetid, szPlayerName, MAX_PLAYER_NAME);
 
             format(szMessage, sizeof(szMessage), "Release: %s has been released from prison by %s, reason: %s", szPlayerName, playerVariables[playerid][pAdminName], reason);
@@ -15894,18 +15910,19 @@ CMD:number(playerid, params[]) {
 	return 1;
 }
 
-CMD:slap(playerid,params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 1) {
+CMD:slap(playerid,params[])
+{
+	if(playerVariables[playerid][pAdminLevel] >= 1) 
+	{
 	    new
 	        userID;
 
 		if(sscanf(params, "u", userID))
-			return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/slap [playerid]");
-
-	    if(playerVariables[userID][pStatus] != 1 || !IsPlayerConnected(userID))
-			return SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-
-	    if(playerVariables[playerid][pAdminLevel] >= playerVariables[userID][pAdminLevel]) {
+			SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/slap [playerid]");
+		else if(playerVariables[userID][pStatus] != 1)
+			SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
+	    else if(playerVariables[playerid][pAdminLevel] >= playerVariables[userID][pAdminLevel]) 
+		{
             new
                 string[64],
 
@@ -16109,8 +16126,10 @@ CMD:accent(playerid, params[]) {
 	return 1;
 }
 
-CMD:warn(playerid, params[]) {
-    if(playerVariables[playerid][pAdminLevel] >= 1) {
+CMD:warn(playerid, params[]) 
+{
+    if(playerVariables[playerid][pAdminLevel] != 1) 
+	{
 	    new
 	        playerWarnID,
 	        playerWarnReason[32];
@@ -16119,7 +16138,7 @@ CMD:warn(playerid, params[]) {
 	        SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/warn [playerid] [reason (length is 32 characters maximum)]]");
 	    }
 	    else {
-	        if(!IsPlayerConnectedEx(playerWarnID)) return SendClientMessage(playerid, COLOR_GREY, "The specified player is not connected, or has not authenticated.");
+	        if(!IsPlayerAuthed(playerWarnID)) return SendClientMessage(playerid, COLOR_GREY, "The specified player is not connected, or has not authenticated.");
 
 	        if(playerVariables[playerWarnID][pAdminLevel] >= playerVariables[playerid][pAdminLevel])
 				return SendClientMessage(playerid, COLOR_GREY, "You can't warn a higher (or equal) level administrator.");
@@ -16748,7 +16767,7 @@ CMD:pay(playerid, params[]) {
 		return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/pay [playerid] [amount]");
 
 	if(playerVariables[playerid][pMoney] >= cash) {
-		if(id != playerid && IsPlayerConnectedEx(id)) {
+		if(id != playerid && IsPlayerAuthed(id)) {
 			if(cash > 0 && ((playerVariables[playerid][pPlayingHours] < 10 && cash < 5000) || playerVariables[playerid][pPlayingHours] >= 10)) {
 				if(playerVariables[playerid][pAdminDuty] != 0 && playerVariables[playerid][pAdminLevel] > 0 || (IsPlayerInRangeOfPlayer(playerid, id, 4.0) && playerVariables[id][pSpectating] == INVALID_PLAYER_ID)) {
 
