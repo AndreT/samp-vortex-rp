@@ -129,12 +129,12 @@ DROP TABLE IF EXISTS `bans`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bans` (
-  `banID` int(12) NOT NULL AUTO_INCREMENT,
-  `playerNameBanned` varchar(24) NOT NULL,
-  `playerBanReason` varchar(512) NOT NULL,
-  `playerBanDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `IPBanned` varchar(32) NOT NULL,
-  `playerBannedBy` varchar(24) NOT NULL DEFAULT 'System',
+  `banID` SMALLINT(6) NOT NULL AUTO_INCREMENT,
+  `playerNameBanned` VARCHAR(24) NOT NULL,
+  `playerBanReason` VARCHAR(48) NOT NULL,
+  `playerBanDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `IPBanned` VARCHAR(16) NOT NULL,
+  `playerBannedBy` VARCHAR(24) NOT NULL DEFAULT 'System',
   PRIMARY KEY (`banID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;

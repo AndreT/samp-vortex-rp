@@ -2019,9 +2019,9 @@ stock hackerTrigger(playerid) {
 	return 1;
 }
 
-stock scriptBan(playerid, reason[]) {
-	new
-		playerIP[32],
+stock scriptBan(playerid, reason[]) 
+{
+	new playerIP[32],
 	    aString[240];
 
 	GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
@@ -2037,24 +2037,26 @@ stock scriptBan(playerid, reason[]) {
 
 	Kick(playerid);
 
-   	format(aString, sizeof(aString), "INSERT INTO bans (playerNameBanned, playerBannedBy, playerBanReason, IPBanned) VALUES('%s', 'System', '%s', '%s')", szPlayerName, reason, playerIP);
+   	format(aString, sizeof(aString), "INSERT INTO bans(playerNameBanned,playerBanReason,IPBanned) VALUES('%s','%s','%s')", szPlayerName, reason, playerIP);
 	mysql_query(aString);
 	return 1;
 }
 
-stock IPBan(ip[], reason[], name[] = "Nobody") {
-	new
-	    cleanReason[64],
+stock IPBan(ip[], reason[], name[] = "Nobody") 
+{
+	new cleanReason[64],
 	    querySz[150]; // To be on the safe side.
 
 	mysql_real_escape_string(reason, cleanReason);
-	format(querySz, sizeof(querySz), "INSERT INTO Bans (playerNameBanned, playerBanReason, IPBanned) VALUES('%s', '%s', '%s')", name, reason, ip);
+	format(querySz, sizeof(querySz), "INSERT INTO bans(playerNameBanned,playerBanReason,IPBanned) VALUES('%s','%s','%s')", name, reason, ip);
 	mysql_query(querySz);
 	return 1;
 }
 
-public OnQueryError(errorid, error[], resultid, extraid, callback[], query[], connectionHandle) {
-	if(IsPlayerConnected(extraid) && resultid == THREAD_CHECK_BANS_LIST) {
+public OnQueryError(errorid, error[], resultid, extraid, callback[], query[], connectionHandle) 
+{
+	if(IsPlayerConnected(extraid) && resultid == THREAD_CHECK_BANS_LIST) 
+	{
 	    ShowPlayerDialog(extraid, 0, DIALOG_STYLE_MSGBOX, "MySQL problem!", "You missed a step! Here's a list of the potential causes:\n\n- the MySQL connection details are invalid\n- the database dump wasn't imported correctly\n- an unexpected error ocurred\n\nPlease revisit the installation instructions.", "OK", "");
 	}
 	
@@ -16149,44 +16151,44 @@ CMD:forcelogout(playerid, params[]) {
 	return 1;
 }
 
-CMD:ban(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 1) {
-	    new
-	        playerBanID,
-	        playerBanReason[60];
+CMD:ban(playerid, params[]) 
+{
+	if(playerVariables[playerid][pAdminLevel] >= 1) 
+	{
+	    new playerBanID, playerBanReason[50];
 
-	    if(sscanf(params, "us[60]", playerBanID, playerBanReason))
-	    	return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/ban [playerid] [reason]");
+	    if(sscanf(params, "us[128]", playerBanID, playerBanReason))
+	    	SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/ban [playerid] [reason]");
+		else if(!(3 <= strlen(playerBanReason) <= 46))
+			SendClientMessage(playerid, COLOR_GREY, "Ban reason must stay between 3 and 46 characters.");
+		else if(playerVariables[playerBanID][pAdminLevel] >= playerVariables[playerid][pAdminLevel])
+			SendClientMessage(playerid, COLOR_GREY, "You can't ban a higher (or equal) level administrator.");
+        else if(playerBanID == INVALID_PLAYER_ID)
+			SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
+		else
+		{
+			new playerIP[32],
+				playerNameBanned[MAX_PLAYER_NAME],
+				aString[384]; // Due to the fact that we'll be dealing with a large query after the ban announcement...
 
-		if(playerVariables[playerBanID][pAdminLevel] >= playerVariables[playerid][pAdminLevel])
-			return SendClientMessage(playerid, COLOR_GREY, "You can't ban a higher (or equal) level administrator.");
+			GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
+			GetPlayerName(playerBanID, playerNameBanned, MAX_PLAYER_NAME);
+			GetPlayerIp(playerBanID, playerIP, sizeof(playerIP));
 
-        if(playerBanID == INVALID_PLAYER_ID)
-			return SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
+			playerVariables[playerBanID][pBanned] = 1;
 
-		new
+			format(aString, sizeof(aString), "Ban: %s has been banned by %s, reason: %s", playerNameBanned, playerVariables[playerid][pAdminName], playerBanReason);
+			SendClientMessageToAll(COLOR_LIGHTRED, aString);
+			mysql_real_escape_string(aString, aString);
+			adminLog(aString);
 
-            playerIP[32],
-            playerNameBanned[MAX_PLAYER_NAME],
-            aString[384]; // Due to the fact that we'll be dealing with a large query after the ban announcement...
+			// TO-DO: doublecheck!
+			//mysql_real_escape_string(szPlayerName, szPlayerName);
+			//mysql_real_escape_string(playerNameBanned, playerNameBanned);
 
-		GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
-		GetPlayerName(playerBanID, playerNameBanned, MAX_PLAYER_NAME);
-
-		GetPlayerIp(playerBanID, playerIP, sizeof(playerIP));
-
-		playerVariables[playerBanID][pBanned] = 1;
-
-       	format(aString, sizeof(aString), "Ban: %s has been banned by %s, reason: %s", playerNameBanned, playerVariables[playerid][pAdminName], playerBanReason);
-       	SendClientMessageToAll(COLOR_LIGHTRED, aString);
-       	mysql_real_escape_string(aString, aString);
-       	adminLog(aString);
-
-       	mysql_real_escape_string(szPlayerName, szPlayerName);
-       	mysql_real_escape_string(playerNameBanned, playerNameBanned);
-
-       	format(aString, sizeof(aString), "INSERT INTO bans (playerNameBanned, playerBannedBy, playerBanReason, IPBanned) VALUES('%s', '%s', '%s', '%s')", playerNameBanned, szPlayerName, playerBanReason, playerIP);
-		mysql_query(aString, THREAD_BAN_PLAYER, playerBanID);
+			format(aString, sizeof(aString), "INSERT INTO bans(playerNameBanned,playerBannedBy,playerBanReason,IPBanned) VALUES('%s','%s','%s','%s')", playerNameBanned, szPlayerName, playerBanReason, playerIP);
+			mysql_query(aString, THREAD_BAN_PLAYER, playerBanID);
+		}
 	}
 	return 1;
 }
