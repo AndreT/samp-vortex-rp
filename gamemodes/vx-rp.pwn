@@ -93,6 +93,9 @@
 #include				<a_zones>
 #include                <sscanf2>
 
+#include				"vx-admin.pwn"
+#include				"vx-anims.pwn"
+
 #define                 MAX_HOUSES                              (100)
 #define                 MAX_BOTS                                (2)
 #define                 MAX_TIMERS              				(5)
@@ -491,17 +494,6 @@ enum playervEnum {
 	pBackup,
 }
 
-enum eventE {
-	eEventStat,
-	eEventCount,
-	Float:eEventPos[3], // XYZ pos.
-	Float:eArmourHP[2], // Health, armour
-	eEventWeapons[5],
-	eEventSkin,
-	eEventInt,
-	eEventVW,
-}
-
 new
 	LSPDObjs[8][3], // 8 sets of doors. 0 = door1, 1 = door2, 2 = status (closed/open)
 	LSPDGates[2][2]; // Boom gate, garage (1 = status, closed/open).
@@ -573,7 +565,6 @@ new
 	iTarget,
 	iGMXTick,
 	systemVariables[systemE],
-	eventVariables[eventE],
 	connectionInfo[connectionE],
 	houseVariables[MAX_HOUSES][houseE],
 	Text:textdrawVariables[MAX_TEXTDRAWS],
@@ -583,11 +574,10 @@ new
  	szQueryOutput[256],
  	szMessage[128],
  	szSmallString[32],
- 	//szSmallString2[32],
- 	szMediumString[64],
  	atmVariables[MAX_ATMS][atmE],
  	result[256],
  	szServerWebsite[32],
+	szMediumString[512];
  	szLargeString[1024],
  	szPlayerName[MAX_PLAYER_NAME],
  	businessVariables[MAX_BUSINESSES][businessE],
@@ -1363,13 +1353,6 @@ stock SendToGroup(groupid, colour, const string[]) {
 	return 1;
 }
 
-stock SendToEvent(const colour, const string[]) {
-	foreach(Player, i) {
-		if(playerVariables[i][pEvent] >= 1) SendClientMessage(i, colour, string);
-	}
-	return 1;
-}
-
 stock FetchLevelFromHours(const iHours) {
 	switch(iHours) {
 	    case 0..24: return 1;
@@ -2063,6 +2046,7 @@ public OnQueryError(errorid, error[], resultid, extraid, callback[], query[], co
 	return printf("errorid: %d | error: %s | resultid: %d | extraid: %d | callback: %s | query: %s", errorid, error, resultid, extraid, callback, query);
 }
 
+/*
 public OnQueryFinish(query[], resultid, extraid, connectionHandle) {
 	switch(resultid) {
 	    case THREAD_UNBAN_IP: {
@@ -2105,6 +2089,11 @@ public OnQueryFinish(query[], resultid, extraid, connectionHandle) {
 			    ShowPlayerDialog(extraid, DIALOG_ADMIN_PIN, DIALOG_STYLE_INPUT, "SERVER: Admin authentication verification", "The system has recognised that you have connected with an IP that you've never used before.\n\nPlease confirm your admin PIN to continue:", "OK", "Cancel");
 			} else mysql_free_result();
 		}
+		*/
+		
+		
+		
+		
 		/*case THREAD_LOAD_PLAYER_VEHICLES: {
 			mysql_store_result();
 			
@@ -2249,6 +2238,7 @@ public OnQueryFinish(query[], resultid, extraid, connectionHandle) {
 			
 			mysql_free_result();
 		}*/
+		/*
 		case THREAD_INITIATE_BUSINESS_ITEMS: {
             mysql_store_result();
 
@@ -2281,22 +2271,26 @@ public OnQueryFinish(query[], resultid, extraid, connectionHandle) {
             
             mysql_free_result();
 		}
-		case THREAD_LAST_CONNECTIONS: {
+		case THREAD_LAST_CONNECTIONS: 
+		{
 			mysql_store_result();
 			
 			if(mysql_num_rows() < 1)
 			    return SendClientMessage(extraid, COLOR_GREY, "You haven't connected more than once yet.");
 
-    		format(szLargeString, sizeof(szLargeString), "Last ~5 of your connections:\n");
-			while(mysql_fetch_row_format(result, " ")) {
-			    format(szLargeString, sizeof(szLargeString), "%s\n%s", szLargeString, result);
+			szLargeString = "Last ~5 of your connections:";
+			while(mysql_fetch_row_format(result, " ")) 
+			{
+				strcat(szLargeString, "\n");
+				strcat(szLargeString, result);
 			}
 			
 			ShowPlayerDialog(extraid, 0, DIALOG_STYLE_MSGBOX, "SERVER: Connection log", szLargeString, "OK", "");
 			
 			mysql_free_result();
 		}
-	    case THREAD_CHECK_PLAYER_NAMES: {
+	    case THREAD_CHECK_PLAYER_NAMES: 
+		{
 	        mysql_store_result();
 
 	        if(mysql_num_rows() == 0)
@@ -2308,10 +2302,12 @@ public OnQueryFinish(query[], resultid, extraid, connectionHandle) {
 			    szTime[20],
 			    szNewName[MAX_PLAYER_NAME];
 
-			format(szLargeString, sizeof(szLargeString), "Name changes:\n");
-            while(mysql_fetch_row_format(result)) { 
+			szLargeString = "Name changes:";
+            while(mysql_fetch_row_format(result)) 
+			{
                 sscanf(result, "p<|>ds[24]s[24]s[20]", iNCID, szOldName, szNewName, szTime);
-                format(szLargeString, sizeof(szLargeString), "%s\n- (%d) Name: %s (changed from %s, %s)", szLargeString, iNCID, szNewName, szOldName, szTime);
+				format(szMediumString, sizeof(szMediumString), "\n- (%d) From \"%s\" to \"%s\" (%s)", iNCID, szOldName, szNewName, szTime);
+				strcat(szLargeString, szMediumString);
             }
 
             ShowPlayerDialog(extraid, 0, DIALOG_STYLE_MSGBOX, "SERVER: Name changes", szLargeString, "OK", "");
@@ -2845,6 +2841,15 @@ public OnQueryFinish(query[], resultid, extraid, connectionHandle) {
 				/*format(result, sizeof(result), "SELECT * FROM playervehicles WHERE pvOwnerId = %d", playerVariables[extraid][pInternalID]);
 				mysql_query(result, THREAD_LOAD_PLAYER_VEHICLES, extraid);*/
 
+				
+				
+				
+				
+				
+				
+				
+				
+				/*
 			    if(playerVariables[extraid][pFirstLogin] >= 1) {
 			        // Dialog to send player in to quiz and prevent any other code for the player from being executed, as they have to complete the quiz/tutorial first.
 			        return ShowPlayerDialog(extraid, DIALOG_QUIZ, DIALOG_STYLE_LIST, "What is roleplay in SA-MP?", "A type of gamemode where you realistically act out a character\nAn STD\nA track by Jay-Z\nA type of gamemode where you just kill people", "Select", "");
@@ -3314,7 +3319,8 @@ public OnQueryFinish(query[], resultid, extraid, connectionHandle) {
 
 			    mysql_get_field("groupSafeCocaine", result);
 			    groupVariables[x][gSafe][3] = strval(result); Drugs are out for now. */
-
+				
+				/*
 			    mysql_get_field("groupMOTD", groupVariables[x][gGroupMOTD]);
 
 			    mysql_get_field("groupRankName1", groupVariables[x][gGroupRankName1]);
@@ -3362,6 +3368,7 @@ public OnQueryFinish(query[], resultid, extraid, connectionHandle) {
 
 	return 1;
 }
+*/
 
 stock showStats(playerid, targetid) {
 	new
@@ -8518,184 +8525,6 @@ stock IsPlayerAimingAtPlayer(playerid, aimid) {
 	return false;
 }
 
-CMD:explode(playerid, params[]) {
-
-	new
-		ID;
-
-	if(playerVariables[playerid][pAdminLevel] >= 4) {
-		if(sscanf(params, "u", ID)) {
-			return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/explode [playerid]");
-		}
-	    else if(IsPlayerAuthed(ID)) {
-			if(playerVariables[playerid][pAdminLevel] >= playerVariables[ID][pAdminLevel]) {
-
-				new
-					Float:fNuke[3],
-					string[45];
-
-				GetPlayerName(ID, szPlayerName, MAX_PLAYER_NAME);
-				GetPlayerPos(ID, fNuke[0], fNuke[1], fNuke[2]);
-
-				CreateExplosion(fNuke[0], fNuke[1], fNuke[2], 9, 100.0);
-				CreateExplosion(fNuke[0], fNuke[1], fNuke[2], 7, 100.0);
-				CreateExplosion(fNuke[0], fNuke[1], fNuke[2]+10.0, 7, 100.0);
-				CreateExplosion(fNuke[0]+random(10)-5, fNuke[1]+random(10)-5, fNuke[2]+random(10)-5, 6, 100.0);
-
-				if(IsPlayerInAnyVehicle(ID)) {
-					GetVehicleVelocity(GetPlayerVehicleID(ID), fNuke[0], fNuke[1], fNuke[2]);
-					SetVehicleVelocity(GetPlayerVehicleID(ID), fNuke[0]+random(10)-5, fNuke[1]+random(10)-5, fNuke[2]+random(10)-5);
-				}
-				else SetPlayerVelocity(ID, random(10)-5, random(10)-5, random(10)-5);
-
-				format(string, sizeof(string), "You have exploded %s.", szPlayerName);
-				SendClientMessage(playerid, COLOR_WHITE, string);
-			}
-			else SendClientMessage(playerid, COLOR_GREY, "You can't explode a higher level administrator.");
-	    }
-	    else SendClientMessage(playerid, COLOR_GREY, "The specified player is not connected, or has not authenticated.");
-	}
-	return 1;
-}
-
-CMD:closestcar(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 1) {
-	    if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT) {
-
-	        new
-				playerWarpVehicle = GetClosestVehicle(playerid),
-				string[64];
-
-	        if(doesVehicleExist(playerWarpVehicle)) {
-				PutPlayerInVehicle(playerid, playerWarpVehicle, 0);
-				format(string, sizeof(string), "You have teleported into a %s (vehicle ID %d).", VehicleNames[GetVehicleModel(playerWarpVehicle) - 400], playerWarpVehicle);
-				SendClientMessage(playerid, COLOR_WHITE, string);
-			}
-			else SendClientMessage(playerid, COLOR_GREY, "No vehicles are in range.");
-		}
-		else SendClientMessage(playerid, COLOR_GREY, "You can only use this command while on foot.");
-	}
-	return 1;
-}
-
-CMD:sethelper(playerid, params[]) {
-	new
-		ID,
-		level;
-
-	if(playerVariables[playerid][pAdminLevel] >= 5) {
-
-		if(sscanf(params, "ud", ID, level))
-			return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/sethelper [playerid] [level]");
-
-	    if(IsPlayerAuthed(ID)) {
-			if(level >= 0 && level <= 4) {
-				new
-					string[79];
-
-				GetPlayerName(ID, szPlayerName, MAX_PLAYER_NAME);
-				format(string, sizeof(string), "You have made %s a level %d helper.", szPlayerName, level);
-				SendClientMessage(playerid, COLOR_WHITE, string);
-
-				GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
-
-				if(level == 0) format(string, sizeof(string), "Administrator %s has removed you from the helper team.", szPlayerName);
-				else if(level >= playerVariables[ID][pHelper]) format(string, sizeof(string), "Administrator %s has promoted you to a level %d helper.", szPlayerName, level);
-				else if (level <= playerVariables[ID][pHelper]) format(string, sizeof(string), "Administrator %s has demoted you to a level %d helper.", szPlayerName, level);
-
-				SendClientMessage(ID, COLOR_NICESKY, string);
-
-				playerVariables[ID][pHelper] = level;
-			}
-			else SendClientMessage(playerid, COLOR_GREY, "Valid helper levels are 0 to 4.");
-	    }
-	    else SendClientMessage(playerid, COLOR_GREY, "The specified player is not connected, or has not authenticated.");
-	}
-	return 1;
-}
-
-CMD:vehname(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 3) {
-
-		SendClientMessage(playerid, COLOR_TEAL, "--------------------------------------------------------------------------------------------------------------------------------");
-		SendClientMessage(playerid, COLOR_WHITE, "Vehicle Search:");
-
-		new
-			rcount;
-
-		if(isnull(params))
-			return SendClientMessage(playerid, COLOR_GREY, "No keyword specified.");
-			
-		if(strlen(params) < 3)
-			return SendClientMessage(playerid, COLOR_GREY, "Search keyword too short.");
-
-		for(new v; v < sizeof(VehicleNames); v++) {
-			if(strfind(VehicleNames[v], params, true) != -1) {
-
-				if(rcount == 0)
-					format(szMessage, sizeof(szMessage), "%s (ID %d)", VehicleNames[v], v+400);
-				else
-					format(szMessage, sizeof(szMessage), "%s | %s (ID %d)", szMessage, VehicleNames[v], v+400);
-
-				rcount++;
-			}
-		}
-
-		if(rcount == 0)
-			SendClientMessage(playerid, COLOR_GREY, "No results found.");
-
-		else
-			if(strlen(szMessage) >= 128)
-				SendClientMessage(playerid, COLOR_GREY, "Too many results found.");
-			else
-				SendClientMessage(playerid, COLOR_WHITE, szMessage);
-
-		SendClientMessage(playerid, COLOR_TEAL, "--------------------------------------------------------------------------------------------------------------------------------");
-	}
-	return 1;
-}
-
-CMD:gunname(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 3) {
-
-		SendClientMessage(playerid, COLOR_TEAL, "--------------------------------------------------------------------------------------------------------------------------------");
-		SendClientMessage(playerid, COLOR_WHITE, "Weapon Search:");
-
-		new
-			rcount;
-
-		if(isnull(params))
-			return SendClientMessage(playerid, COLOR_GREY, "No keyword specified.");
-			
-		if(strlen(params) < 3)
-			return SendClientMessage(playerid, COLOR_GREY, "Search keyword too short.");
-
-		for(new v; v < sizeof(WeaponNames); v++) {
-			if(strfind(WeaponNames[v], params, true) != -1) {
-
-				if(rcount == 0)
-					format(szMessage, sizeof(szMessage), "%s (ID %d)", WeaponNames[v], v);
-				else
-					format(szMessage, sizeof(szMessage), "%s | %s (ID %d)", szMessage, WeaponNames[v], v);
-
-				rcount++;
-			}
-		}
-
-		if(rcount == 0)
-			SendClientMessage(playerid, COLOR_GREY, "No results found.");
-
-		else if(strlen(szMessage) >= 128)
-			SendClientMessage(playerid, COLOR_GREY, "Too many results found.");
-
-		else
-			SendClientMessage(playerid, COLOR_WHITE, szMessage);
-
-		SendClientMessage(playerid, COLOR_TEAL, "--------------------------------------------------------------------------------------------------------------------------------");
-	}
-	return 1;
-}
-
 CMD:elevator(playerid, params[]) {
 	if(groupVariables[playerVariables[playerid][pGroup]][gGroupType] == 1) {
 		if(IsPlayerInRangeOfPoint(playerid, 1, 276.0980, 122.1232, 1004.6172)) { // Interior
@@ -8785,631 +8614,6 @@ CMD:shakehand(playerid, params[]) {
 	return 1;
 }
 
-CMD:piss(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-	SetPlayerSpecialAction(playerid, 68);
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-	return 1;
-}
-
-CMD:handsup(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_HANDSUP);
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-	return 1;
-}
-
-CMD:drunk(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-	ApplyAnimation(playerid, "PED", "WALK_DRUNK", 4.0, 1, 1, 1, 1, 0);
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-	return 1;
-}
-
-CMD:bomb(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-	ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:rob(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-	ApplyAnimation(playerid, "ped", "ARRESTgun", 4.0, 0, 1, 1, 1, 0);
- 	return 1;
-}
-
-CMD:laugh(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
- 	ApplyAnimation(playerid, "RAPPING", "Laugh_01", 4.0, 0, 0, 0, 0, 0);
-	return 1;
-}
-
-CMD:lookout(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "SHOP", "ROB_Shifty", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:robman(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "SHOP", "ROB_Loop_Threat", 4.0, 1, 0, 0, 0, 0);
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
-}
-
-CMD:hide(playerid, params[]) {
-
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "ped", "cower", 3.0, 1, 0, 0, 0, 0);
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
-}
-
-CMD:vomit(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "FOOD", "EAT_Vomit_P", 3.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:eat(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 3.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:slapass(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "SWEET", "sweet_ass_slap", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:crack(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "CRACK", "crckdeth2", 4.0, 1, 0, 0, 0, 0);
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
-}
-
-CMD:finger(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "PED", "fucku", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:taichi(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "PARK", "Tai_Chi_Loop", 4.0, 1, 0, 0, 0, 0);
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
-}
-
-CMD:drinkwater(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "BAR", "dnk_stndF_loop", 4.0, 1, 0, 0, 0, 0);
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
-}
-
-CMD:checktime(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "COP_AMBIENT", "Coplook_watch", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:sleep(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "CRACK", "crckdeth4", 4.0, 0, 1, 1, 1, -1);
-   	return 1;
-}
-
-CMD:blob(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "CRACK", "crckidle1", 4.0, 0, 1, 1, 1, -1);
-   	return 1;
-}
-
-CMD:opendoor(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "AIRPORT", "thrw_barl_thrw", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:wavedown(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "BD_FIRE", "BD_Panic_01", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:cpr(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:dive(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "DODGE", "Crush_Jump", 4.0, 0, 1, 1, 1, 0);
-   	return 1;
-}
-
-CMD:showoff(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "Freeweights", "gym_free_celebrate", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:goggles(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "goggles", "goggles_put_on", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:cry(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "GRAVEYARD", "mrnF_loop", 4.0, 1, 0, 0, 0, 0);
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
-}
-
-CMD:throw(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "GRENADE", "WEAPON_throw", 4.0, 0, 0, 0, 0, 0);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
-}
-
-CMD:robbed(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "SHOP", "SHP_Rob_GiveCash", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:hurt(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.0, 1, 0, 0, 0, 0);
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
-}
-
-CMD:box(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "GYMNASIUM", "GYMshadowbox", 4.0, 1, 0, 0, 0, 0);
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
-}
-
-CMD:handwash(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "BD_FIRE", "wash_up", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:crabs(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "MISC", "Scratchballs_01", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:salute(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "ON_LOOKERS", "Pointup_loop", 4.0, 1, 0, 0, 0, 0);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
-}
-
-CMD:masturbate(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "PAULNMAC", "wank_out", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:stop(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	ApplyAnimation(playerid, "PED", "endchat_01", 4.0, 0, 0, 0, 0, 0);
-   	return 1;
-}
-
-CMD:rap(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/rap [1-3]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "RAPPING", "RAP_A_Loop", 4.0, 1, 0, 0, 0, 0);
-    	case 2: ApplyAnimation(playerid, "RAPPING", "RAP_B_Loop", 4.0, 1, 0, 0, 0, 0);
-     	case 3: ApplyAnimation(playerid, "RAPPING", "RAP_C_Loop", 4.0, 1, 0, 0, 0, 0);
-      	default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/rap [1-3]");
-   	}
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
- }
-
-CMD:chat(playerid, params[]) {
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-	new animid;
-	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/chat [1-7]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "PED", "IDLE_CHAT", 4.0, 0, 0, 0, 0, 0);
-  		case 2: ApplyAnimation(playerid, "GANGS", "prtial_gngtlkA", 4.0, 0, 0, 0, 0, 0);
-		case 3: ApplyAnimation(playerid, "GANGS", "prtial_gngtlkB", 4.0, 0, 0, 0, 0, 0);
-  		case 4: ApplyAnimation(playerid, "GANGS", "prtial_gngtlkE", 4.0, 0, 0, 0, 0, 0);
-  		case 5: ApplyAnimation(playerid, "GANGS", "prtial_gngtlkF", 4.0, 0, 0, 0, 0, 0);
-  		case 6: ApplyAnimation(playerid, "GANGS", "prtial_gngtlkG", 4.0, 0, 0, 0, 0, 0);
-	    case 7: ApplyAnimation(playerid, "GANGS", "prtial_gngtlkH", 4.0, 0, 0, 0, 0, 0);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/chat [1-7]");
- 	}
- 	return 1;
-}
-
-CMD:gesture(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/gesture [1-15]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "GHANDS", "gsign1", 4.0, 0, 0, 0, 0, 0);
-        case 2: ApplyAnimation(playerid, "GHANDS", "gsign1LH", 4.0, 0, 0, 0, 0, 0);
-        case 3: ApplyAnimation(playerid, "GHANDS", "gsign2", 4.0, 0, 0, 0, 0, 0);
-        case 4: ApplyAnimation(playerid, "GHANDS", "gsign2LH", 4.0, 0, 0, 0, 0, 0);
-        case 5: ApplyAnimation(playerid, "GHANDS", "gsign3", 4.0, 0, 0, 0, 0, 0);
-        case 6: ApplyAnimation(playerid, "GHANDS", "gsign3LH", 4.0, 0, 0, 0, 0, 0);
-        case 7: ApplyAnimation(playerid, "GHANDS", "gsign4", 4.0, 0, 0, 0, 0, 0);
-        case 8: ApplyAnimation(playerid, "GHANDS", "gsign4LH", 4.0, 0, 0, 0, 0, 0);
-        case 9: ApplyAnimation(playerid, "GHANDS", "gsign5", 4.0, 0, 0, 0, 0, 0);
-        case 10: ApplyAnimation(playerid, "GHANDS", "gsign5", 4.0, 0, 0, 0, 0, 0);
-        case 11: ApplyAnimation(playerid, "GHANDS", "gsign5LH", 4.0, 0, 0, 0, 0, 0);
-        case 12: ApplyAnimation(playerid, "GANGS", "Invite_No", 4.0, 0, 0, 0, 0, 0);
-        case 13: ApplyAnimation(playerid, "GANGS", "Invite_Yes", 4.0, 0, 0, 0, 0, 0);
-        case 14: ApplyAnimation(playerid, "GANGS", "prtial_gngtlkD", 4.0, 0, 0, 0, 0, 0);
-        case 15: ApplyAnimation(playerid, "GANGS", "smkcig_prtl", 4.0, 0, 0, 0, 0, 0);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/gesture [1-15]");
-   	}
-   	return 1;
-}
-
-CMD:lay(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/lay [1-3]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "BEACH", "bather", 4.0, 1, 0, 0, 0, 0);
-  		case 2: ApplyAnimation(playerid, "BEACH", "Lay_Bac_Loop", 4.0, 1, 0, 0, 0, 0);
-  		case 3: ApplyAnimation(playerid, "BEACH", "SitnWait_loop_W", 4.0, 1, 0, 0, 0, 0);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/lay [1-3]");
- 	}
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
- 	return 1;
-}
-
-CMD:wave(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/wave [1-3]");
-	switch(animid) {
- 		case 1: ApplyAnimation(playerid, "ON_LOOKERS", "wave_loop", 4.0, 1, 0, 0, 0, 0);
- 		case 2: ApplyAnimation(playerid, "KISSING", "gfwave2", 4.0, 0, 0, 0, 0, 0);
- 		case 3: ApplyAnimation(playerid, "PED", "endchat_03", 4.0, 0, 0, 0, 0, 0);
- 		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/wave [1-3]");
- 	}
- 	return 1;
-}
-
-CMD:signal(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-   	new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/signal [1-2]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "POLICE", "CopTraf_Come", 4.0, 0, 0, 0, 0, 0);
-  		case 2: ApplyAnimation(playerid, "POLICE", "CopTraf_Stop", 4.0, 0, 0, 0, 0, 0);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/signal [1-2]");
-   	}
-   	return 1;
-}
-
-CMD:nobreath(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/nobreath [1-3]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 0, 0, 0, 0);
-    	case 2: ApplyAnimation(playerid, "PED", "IDLE_tired", 4.0, 1, 0, 0, 0, 0);
-     	case 3: ApplyAnimation(playerid, "FAT", "IDLE_tired", 4.0, 1, 0, 0, 0, 0);
-     	default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/nobreath [1-3]");
- 	}
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
- 	return 1;
-}
-
-CMD:fallover(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/fallover [1-3]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0);
-    	case 2: ApplyAnimation(playerid, "PED", "KO_shot_face", 4.0, 0, 1, 1, 1, 0);
-     	case 3: ApplyAnimation(playerid, "PED", "KO_shot_stom", 4.0, 0, 1, 1, 1, 0);
-      	default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/fallover [1-3]");
- 	}
- 	return 1;
-}
-
-CMD:pedmove(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/pedmove [1-26]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "PED", "JOG_femaleA", 4.0, 1, 1, 1, 1, 1);
-    	case 2: ApplyAnimation(playerid, "PED", "JOG_maleA", 4.0, 1, 1, 1, 1, 1);
-	    case 3: ApplyAnimation(playerid, "PED", "WOMAN_walkfatold", 4.0, 1, 1, 1, 1, 1);
-	    case 4: ApplyAnimation(playerid, "PED", "run_fat", 4.0, 1, 1, 1, 1, 1);
-	    case 5: ApplyAnimation(playerid, "PED", "run_fatold", 4.0, 1, 1, 1, 1, 1);
-	    case 6: ApplyAnimation(playerid, "PED", "run_old", 4.0, 1, 1, 1, 1, 1);
-	    case 7: ApplyAnimation(playerid, "PED", "Run_Wuzi", 4.0, 1, 1, 1, 1, 1);
-	    case 8: ApplyAnimation(playerid, "PED", "swat_run", 4.0, 1, 1, 1, 1, 1);
-     	case 9: ApplyAnimation(playerid, "PED", "WALK_fat", 4.0, 1, 1, 1, 1, 1);
-      	case 10: ApplyAnimation(playerid, "PED", "WALK_fatold", 4.0, 1, 1, 1, 1, 1);
-       	case 11: ApplyAnimation(playerid, "PED", "WALK_gang1", 4.0, 1, 1, 1, 1, 1);
-	    case 12: ApplyAnimation(playerid, "PED", "WALK_gang2", 4.0, 1, 1, 1, 1, 1);
-	    case 13: ApplyAnimation(playerid, "PED", "WALK_old", 4.0, 1, 1, 1, 1, 1);
-	    case 14: ApplyAnimation(playerid, "PED", "WALK_shuffle", 4.0, 1, 1, 1, 1, 1);
-	    case 15: ApplyAnimation(playerid, "PED", "woman_run", 4.0, 1, 1, 1, 1, 1);
-	    case 16: ApplyAnimation(playerid, "PED", "WOMAN_runbusy", 4.0, 1, 1, 1, 1, 1);
-	    case 17: ApplyAnimation(playerid, "PED", "WOMAN_runfatold", 4.0, 1, 1, 1, 1, 1);
-	    case 18: ApplyAnimation(playerid, "PED", "woman_runpanic", 4.0, 1, 1, 1, 1, 1);
-	    case 19: ApplyAnimation(playerid, "PED", "WOMAN_runsexy", 4.0, 1, 1, 1, 1, 1);
-	    case 20: ApplyAnimation(playerid, "PED", "WOMAN_walkbusy", 4.0, 1, 1, 1, 1, 1);
-	    case 21: ApplyAnimation(playerid, "PED", "WOMAN_walkfatold", 4.0, 1, 1, 1, 1, 1);
-	    case 22: ApplyAnimation(playerid, "PED", "WOMAN_walknorm", 4.0, 1, 1, 1, 1, 1);
-	    case 23: ApplyAnimation(playerid, "PED", "WOMAN_walkold", 4.0, 1, 1, 1, 1, 1);
-     	case 24: ApplyAnimation(playerid, "PED", "WOMAN_walkpro", 4.0, 1, 1, 1, 1, 1);
-  		case 25: ApplyAnimation(playerid, "PED", "WOMAN_walksexy", 4.0, 1, 1, 1, 1, 1);
-  		case 26: ApplyAnimation(playerid, "PED", "WOMAN_walkshop", 4.0, 1, 1, 1, 1, 1);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/pedmove [1-26]");
- 	}
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-	return 1;
-}
-
-CMD:getjiggy(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/getjiggy [1-9]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "DANCING", "DAN_Down_A", 4.0, 1, 0, 0, 0, 0);
-    	case 2: ApplyAnimation(playerid, "DANCING", "DAN_Left_A", 4.0, 1, 0, 0, 0, 0);
-     	case 3: ApplyAnimation(playerid, "DANCING", "DAN_Loop_A", 4.0, 1, 0, 0, 0, 0);
-      	case 4: ApplyAnimation(playerid, "DANCING", "DAN_Right_A", 4.0, 1, 0, 0, 0, 0);
-       	case 5: ApplyAnimation(playerid, "DANCING", "DAN_Up_A", 4.0, 1, 0, 0, 0, 0);
-        case 6: ApplyAnimation(playerid, "DANCING", "dnce_M_a", 4.0, 1, 0, 0, 0, 0);
-       	case 7: ApplyAnimation(playerid, "DANCING", "dnce_M_b", 4.0, 1, 0, 0, 0, 0);
-        case 8: ApplyAnimation(playerid, "DANCING", "dnce_M_c", 4.0, 1, 0, 0, 0, 0);
-        case 9: ApplyAnimation(playerid, "DANCING", "dnce_M_d", 4.0, 1, 0, 0, 0, 0);
-        default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/getjiggy [1-9]");
-   	}
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
-}
-
-CMD:stripclub(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/stripclub [1-2]");
-	switch(animid) {
-
-       	case 1: ApplyAnimation(playerid, "STRIP", "PLY_CASH", 4.0, 0, 0, 0, 0, 0);
-       	case 2: ApplyAnimation(playerid, "STRIP", "PUN_CASH", 4.0, 0, 0, 0, 0, 0);
-       	default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/stripclub [1-2]");
- 	}
- 	return 1;
-}
-
-CMD:smoke(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/smoke [1-3]");
-	switch(animid) {
-
-		case 1: ApplyAnimation(playerid, "SMOKING", "M_smk_in", 4.0, 0, 0, 0, 0, 0);
-  		case 2: ApplyAnimation(playerid, "SMOKING", "M_smklean_loop", 4.0, 1, 0, 0, 0, 0);
-		case 3: SetPlayerSpecialAction(playerid, SPECIAL_ACTION_SMOKE_CIGGY);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/smoke [1-2]");
- 	}
- 	return 1;
-}
-
-CMD:dj(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/dj [1-4]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "SCRATCHING", "scdldlp", 4.0, 1, 0, 0, 0, 0);
-    	case 2: ApplyAnimation(playerid, "SCRATCHING", "scdlulp", 4.0, 1, 0, 0, 0, 0);
-     	case 3: ApplyAnimation(playerid, "SCRATCHING", "scdrdlp", 4.0, 1, 0, 0, 0, 0);
-     	case 4: ApplyAnimation(playerid, "SCRATCHING", "scdrulp", 4.0, 1, 0, 0, 0, 0);
-      	default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/dj [1-4]");
- 	}
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-	return 1;
-}
-
-CMD:reload(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/reload - 1 (Desert Eagle), 2 (SPAS12), 3 (UZI/AK-47/M4A1)");
-	switch(animid) {
-		case 1: ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, 0, 0, 0, 0, 0);
-  		case 2: ApplyAnimation(playerid, "BUDDY", "buddy_reload", 4.0, 0, 0, 0, 0, 0);
- 		case 3: ApplyAnimation(playerid, "UZI", "UZI_reload", 4.0,0,0,0,0,0);
-		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/reload - 1 (Desert Eagle), 2 (SPAS12), 3 (UZI/AK-47/M4A1)");
- 	}
- 	return 1;
-}
-
-CMD:tag(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/tag [1-2]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "GRAFFITI", "graffiti_Chkout", 4.0, 0, 0, 0, 0, 0);
-    	case 2: ApplyAnimation(playerid, "GRAFFITI", "spraycan_fire", 4.0, 0, 0, 0, 0, 0);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/tag [1-2]");
- 	}
- 	return 1;
-}
-
-CMD:deal(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	if(playerVariables[playerid][pEvent] == 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while in an event.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/deal [1-2]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "DEALER", "DEALER_DEAL", 4.0, 0, 0, 0, 0, 0);
-  		case 2: ApplyAnimation(playerid, "DEALER", "shop_pay", 4.0, 0, 0, 0, 0, 0);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/deal [1-2]");
- 	}
- 	return 1;
-}
-
-CMD:stopanim(playerid, params[]) {
-	if(playerVariables[playerid][pFreezeType] == 0 && GetPlayerState(playerid) == 1 && playerVariables[playerid][pEvent] == 0) {
-		ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0);
-		TextDrawHideForPlayer(playerid, textdrawVariables[5]);
-		SendClientMessage(playerid, COLOR_WHITE, "Animations cleared.");
-		ClearAnimations(playerid);
-		playerVariables[playerid][pAnimation] = 0;
-		TogglePlayerControllable(playerid, 1);
-	}
-	else SendClientMessage(playerid, COLOR_GREY, "You can't do this right now.");
-	return 1;
-}
-
 CMD:time(playerid, params[]) {
 	new
 	    time[3];
@@ -9429,130 +8633,6 @@ CMD:time(playerid, params[]) {
 		SendClientMessage(playerid, COLOR_WHITE, szMessage);
 	}
 	return 1;
-}
-
-CMD:crossarms(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/crossarms [1-4]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "COP_AMBIENT", "Coplook_loop", 4.0, 0, 1, 1, 1, -1);
-  		case 2: ApplyAnimation(playerid, "DEALER", "DEALER_IDLE", 4.0, 1, 0, 0, 0, 0);
-  		case 3: ApplyAnimation(playerid, "GRAVEYARD", "mrnM_loop", 4.0, 1, 0, 0, 0, 0);
-  		case 4: ApplyAnimation(playerid, "GRAVEYARD", "prst_loopa", 4.0, 1, 0, 0, 0, 0);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/crossarms [1-4]");
- 	}
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
- 	return 1;
-}
-
-CMD:bat(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-	new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/bat [1-2]");
-	switch(animid) {
-		case 1: ApplyAnimation(playerid, "CRACK", "Bbalbat_Idle_01", 4.0, 1, 0, 0, 0, 0);
-		case 2: ApplyAnimation(playerid, "CRACK", "Bbalbat_Idle_02", 4.0, 1, 0, 0, 0, 0);
-		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/bat [1-2]");
- 	}
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
- 	return 1;
-}
-
-CMD:cheer(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-   	new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/cheer [1-8]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "ON_LOOKERS", "shout_01", 4.0, 0, 0, 0, 0, 0);
-  		case 2: ApplyAnimation(playerid, "ON_LOOKERS", "shout_02", 4.0, 0, 0, 0, 0, 0);
-  		case 3: ApplyAnimation(playerid, "ON_LOOKERS", "shout_in", 4.0, 0, 0, 0, 0, 0);
-  		case 4: ApplyAnimation(playerid, "RIOT", "RIOT_ANGRY_B", 4.0, 1, 0, 0, 0, 0);
-  		case 5: ApplyAnimation(playerid, "RIOT", "RIOT_CHANT", 4.0, 0, 0, 0, 0, 0);
-  		case 6: ApplyAnimation(playerid, "RIOT", "RIOT_shout", 4.0, 0, 0, 0, 0, 0);
-  		case 7: ApplyAnimation(playerid, "STRIP", "PUN_HOLLER", 4.0, 0, 0, 0, 0, 0);
-  		case 8: ApplyAnimation(playerid, "OTB", "wtchrace_win", 4.0, 0, 0, 0, 0, 0);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/cheer [1-8]");
- 	}
-   	return 1;
-}
-
-CMD:sit(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-   	new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/sit [1-6]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "BEACH", "bather", 4.0, 1, 0, 0, 0, 0);
-  		case 2: ApplyAnimation(playerid, "BEACH", "Lay_Bac_Loop", 4.0, 1, 0, 0, 0, 0);
-  		case 3: ApplyAnimation(playerid, "BEACH", "ParkSit_W_loop", 4.0, 1, 0, 0, 0, 0);
-		case 4: ApplyAnimation(playerid, "BEACH", "SitnWait_loop_W", 4.0, 1, 0, 0, 0, 0);
-  		case 5: ApplyAnimation(playerid, "BEACH", "ParkSit_M_loop", 4.0, 1, 0, 0, 0, 0);
-  		case 6: ApplyAnimation(playerid, "PED", "SEAT_down", 4.0, 0, 1, 1, 1, 0);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/sit [1-6]");
- 	}
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
- 	return 1;
-}
-
-CMD:siteat(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/siteat [1-2]");
-	switch(animid) {
-
-		case 1: ApplyAnimation(playerid, "FOOD", "FF_Sit_Eat3", 4.0, 1, 0, 0, 0, 0);
-		case 2: ApplyAnimation(playerid, "FOOD", "FF_Sit_Eat2", 4.0, 1, 0, 0, 0, 0);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/siteat [1-2]");
-   	}
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
-   	return 1;
-}
-
-CMD:bar(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/bar [1-5]");
-	switch(animid) {
-
-  		case 1: ApplyAnimation(playerid, "BAR", "Barcustom_get", 4.0, 0, 1, 0, 0, 0);
-  		case 2: ApplyAnimation(playerid, "BAR", "Barserve_bottle", 4.0, 0, 0, 0, 0, 0);
-  		case 3: ApplyAnimation(playerid, "BAR", "Barserve_give", 4.0, 0, 0, 0, 0, 0);
-		case 4: ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 4.0, 0, 0, 0, 0, 0);
-	    case 5: ApplyAnimation(playerid, "BAR", "BARman_idle", 4.0, 0, 0, 0, 0, 0);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/bar [1-5]");
- 	}
-   	return 1;
-}
-
-CMD:dance(playerid, params[]) {
-    if(GetPlayerState(playerid) != 1) return SendClientMessage(playerid, COLOR_GREY, "You can only use this animation while on foot.");
-    if(playerVariables[playerid][pFreezeTime] != 0) return SendClientMessage(playerid, COLOR_GREY, "You can't use animations while cuffed, tazed, or frozen.");
-    new animid;
-   	if(sscanf(params,"d",animid)) return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/dance [1-4]");
-	switch(animid) {
-
-  		case 1: SetPlayerSpecialAction(playerid, 5);
-	    case 2: SetPlayerSpecialAction(playerid, 6);
-        case 3: SetPlayerSpecialAction(playerid, 7);
-	    case 4: SetPlayerSpecialAction(playerid, 8);
-  		default: SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/dance [style 1-4]");
-	}
-	TextDrawShowForPlayer(playerid, textdrawVariables[5]);
-	playerVariables[playerid][pAnimation] = 1;
- 	return 1;
 }
 
 CMD:cancelbackup(playerid, params[]) {
@@ -9692,11 +8772,9 @@ CMD:group(playerid, params[]) {
 	return 1;
 }
 
-CMD:r(playerid, params[]) {
-	return cmd_radio(playerid, params);
-}
-
-CMD:radio(playerid, params[]) {
+CMD:r(playerid, params[]) return cmd_radio(playerid, params);
+CMD:radio(playerid, params[]) 
+{
 	if(playerVariables[playerid][pStatus] != 1 || playerVariables[playerid][pGroup] < 1)
 		return SendClientMessage(playerid, COLOR_GREY, "Your group data is invalid.");
 
@@ -9728,11 +8806,9 @@ CMD:radio(playerid, params[]) {
 	return 1;
 }
 
-CMD:d(playerid, params[]) {
-	return cmd_department(playerid, params);
-}
-
-CMD:department(playerid, params[]) {
+CMD:d(playerid, params[]) return cmd_department(playerid, params);
+CMD:department(playerid, params[]) 
+{
 	if(playerVariables[playerid][pStatus] != 1 || playerVariables[playerid][pGroup] < 1)
 		return SendClientMessage(playerid, COLOR_GREY, "Your group data is invalid.");
 
@@ -10457,46 +9533,6 @@ CMD:killcheckpoint(playerid, params[]) {
 	playerVariables[playerid][pCheckpoint] = 0;
 	playerVariables[playerid][pBackup] = -1;
 	SendClientMessage(playerid, COLOR_WHITE,"You have disabled your current checkpoint.");
-	return 1;
-}
-
-CMD:quitevent(playerid, params[]) {
-
-	if(playerVariables[playerid][pEvent] >= 1) {
-		if(eventVariables[eEventStat] == 1) {
-
-			new
-				string[128];
-
-			TogglePlayerControllable(playerid, true);
-
-			ResetPlayerWeapons(playerid);
-			givePlayerWeapons(playerid);
-
-			SetPlayerPos(playerid, playerVariables[playerid][pPos][0], playerVariables[playerid][pPos][1], playerVariables[playerid][pPos][2]);
-			SetPlayerInterior(playerid, playerVariables[playerid][pInterior]);
-			SetPlayerVirtualWorld(playerid, playerVariables[playerid][pVirtualWorld]);
-			SetPlayerSkin(playerid, playerVariables[playerid][pSkin]);
-			SetCameraBehindPlayer(playerid);
-
-			if(playerVariables[playerid][pAdminDuty] == 1) {
-				SetPlayerHealth(playerid, 500000.0);
-			}
-			else {
-				SetPlayerHealth(playerid, playerVariables[playerid][pHealth]);
-				SetPlayerArmour(playerid, playerVariables[playerid][pArmour]);
-			}
-
-			SendClientMessage(playerid, COLOR_WHITE, "You have quit the event.");
-			playerVariables[playerid][pEvent] = 0;
-			eventVariables[eEventCount]--;
-
-    	    format(string, sizeof(string), "%s has left the event (quit). %d participants remain.", playerVariables[playerid][pNormalName], eventVariables[eEventCount]);
-			SendToEvent(COLOR_YELLOW, string);
-		}
-		else SendClientMessage(playerid, COLOR_WHITE, "The event has already begun - it's too late to quit.");
-	}
-	else SendClientMessage(playerid, COLOR_WHITE, "You're not in an event.");
 	return 1;
 }
 
@@ -16010,592 +15046,8 @@ CMD:accent(playerid, params[]) {
 	return 1;
 }
 
-CMD:warn(playerid, params[]) 
-{
-    if(playerVariables[playerid][pAdminLevel] != 1) 
-	{
-	    new
-	        playerWarnID,
-	        playerWarnReason[32];
-
-	    if(sscanf(params, "us[32]", playerWarnID, playerWarnReason)) {
-	        SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/warn [playerid] [reason (length is 32 characters maximum)]]");
-	    }
-	    else {
-	        if(!IsPlayerAuthed(playerWarnID)) return SendClientMessage(playerid, COLOR_GREY, "The specified player is not connected, or has not authenticated.");
-
-	        if(playerVariables[playerWarnID][pAdminLevel] >= playerVariables[playerid][pAdminLevel])
-				return SendClientMessage(playerid, COLOR_GREY, "You can't warn a higher (or equal) level administrator.");
-
-			if(playerVariables[playerWarnID][pWarning1][0] == '*')
-	        {
-	            new
-
-	                messageString[128];
-
-	            mysql_real_escape_string(playerWarnReason, playerVariables[playerWarnID][pWarning1]);
-
-	            GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
-
-	            format(messageString, sizeof(messageString), "You have been warned by Administrator %s, reason: %s. This is your first warning.", szPlayerName, playerWarnReason);
-	            SendClientMessage(playerWarnID, COLOR_LIGHTRED, messageString);
-
-	            GetPlayerName(playerWarnID, szPlayerName, MAX_PLAYER_NAME);
-
-	            format(messageString, sizeof(messageString), "You have warned %s (for %s). This is their first warning.", szPlayerName, playerWarnReason);
-	            SendClientMessage(playerWarnID, COLOR_LIGHTRED, messageString);
-	        }
-			else if(playerVariables[playerWarnID][pWarning2][0] == '*') 
-			{
-	            new
-
-	                messageString[128];
-
-	            mysql_real_escape_string(playerWarnReason, playerVariables[playerWarnID][pWarning2]);
-
-	            GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
-
-	            format(messageString, sizeof(messageString), "You have been warned by Administrator %s, reason: %s. This is your second warning.", szPlayerName, playerWarnReason);
-	            SendClientMessage(playerWarnID, COLOR_LIGHTRED, messageString);
-
-	            GetPlayerName(playerWarnID, szPlayerName, MAX_PLAYER_NAME);
-
-	            format(messageString, sizeof(messageString), "You have warned %s (for %s). This is their second warning.", szPlayerName, playerWarnReason);
-	            SendClientMessage(playerWarnID, COLOR_LIGHTRED, messageString);
-	        }
-	        else 
-			{
-	            new
-
-	                messageString[128];
-
-	            mysql_real_escape_string(playerWarnReason, playerVariables[playerWarnID][pWarning3]);
-
-	            GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
-
-	            format(messageString, sizeof(messageString), "You have been warned by Administrator %s, reason: %s. This is your third warning.", szPlayerName, playerWarnReason);
-	            SendClientMessage(playerWarnID, COLOR_LIGHTRED, messageString);
-
-	            GetPlayerName(playerWarnID, szPlayerName, MAX_PLAYER_NAME);
-
-	            format(messageString, sizeof(messageString), "You have warned %s (for %s). This is their third warning.", szPlayerName, playerWarnReason);
-	            SendClientMessage(playerWarnID, COLOR_LIGHTRED, messageString);
-
-	            GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
-
-	            format(messageString, 42, "Third warning (last from %s)", szPlayerName);
-	            scriptBan(playerWarnID, messageString);
-	        }
-	    }
-	}
-	return 1;
-}
-
 CMD:stats(playerid, params[]) {
 	return cmd_statistics(playerid, params);
-}
-
-CMD:setweather(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 3) {
-		if(!isnull(params)) {
-
-			new
-				weatherID = strval(params);
-
-			if(weatherID >= 1 && weatherID <= 45) {
-
-				weatherVariables[0] = weatherID;
-				foreach(Player, i) {
-					if(!GetPlayerInterior(i)) {
-						SetPlayerWeather(i, weatherVariables[0]);
-					}
-				}
-			}
-			else SendClientMessage(playerid, COLOR_GREY, "Invalid weather ID specified (must be between 1 and 45).");
-		}
-		else SendClientMessage(playerid, COLOR_GREY, "No weather ID specified.");
-	}
-	return 1;
-}
-
-CMD:forcelogout(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 2) {
-		new
-	        playerLID;
-
-	    if(sscanf(params, "u", playerLID))
-	        return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/forcelogout [playerid]");
-
-		if(playerVariables[playerid][pAdminLevel] < playerVariables[playerLID][pAdminLevel])
-			return SendClientMessage(playerid, COLOR_GREY, "You can't force a higher level administrator to log out.");
-
-		if(playerLID == INVALID_PLAYER_ID)
-			return SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-			
-		if(playerVariables[playerLID][pAdminDuty] != 0)
-		    return SendClientMessage(playerid, COLOR_GREY, "You can't be on admin duty to do this.");
-
-		GetPlayerName(playerLID, szPlayerName, MAX_PLAYER_NAME);
-		format(szMessage, sizeof(szMessage), "You have forced %s to logout.", szPlayerName);
-		SendClientMessage(playerid, COLOR_WHITE, szMessage);
-
-	    savePlayerData(playerLID);
-	    playerVariables[playerLID][pStatus] = 0;
-	    
-		if(playerVariables[playerLID][pCarModel] >= 1)
-			DestroyVehicle(playerVariables[playerLID][pCarID]);
-			
-	    SendClientMessage(playerLID, COLOR_GREY, "You have been forced to logout by an administrator, for being deemed as away.");
-	    ShowPlayerDialog(playerLID, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "SERVER: Login", "Welcome to the "SERVER_NAME" Server.\n\nPlease enter your password below!", "Login", "Cancel");
-	}
-	return 1;
-}
-
-CMD:ban(playerid, params[]) 
-{
-	if(playerVariables[playerid][pAdminLevel] >= 1) 
-	{
-	    new playerBanID, playerBanReason[50];
-
-	    if(sscanf(params, "us[128]", playerBanID, playerBanReason))
-	    	SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/ban [playerid] [reason]");
-		else if(!(3 <= strlen(playerBanReason) <= 46))
-			SendClientMessage(playerid, COLOR_GREY, "Ban reason must stay between 3 and 46 characters.");
-		else if(playerVariables[playerBanID][pAdminLevel] >= playerVariables[playerid][pAdminLevel])
-			SendClientMessage(playerid, COLOR_GREY, "You can't ban a higher (or equal) level administrator.");
-        else if(playerBanID == INVALID_PLAYER_ID)
-			SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-		else
-		{
-			new playerIP[32],
-				playerNameBanned[MAX_PLAYER_NAME],
-				aString[384]; // Due to the fact that we'll be dealing with a large query after the ban announcement...
-
-			GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
-			GetPlayerName(playerBanID, playerNameBanned, MAX_PLAYER_NAME);
-			GetPlayerIp(playerBanID, playerIP, sizeof(playerIP));
-
-			playerVariables[playerBanID][pBanned] = 1;
-
-			format(aString, sizeof(aString), "Ban: %s has been banned by %s, reason: %s", playerNameBanned, playerVariables[playerid][pAdminName], playerBanReason);
-			SendClientMessageToAll(COLOR_LIGHTRED, aString);
-			mysql_real_escape_string(aString, aString);
-			adminLog(aString);
-
-			// TO-DO: doublecheck!
-			//mysql_real_escape_string(szPlayerName, szPlayerName);
-			//mysql_real_escape_string(playerNameBanned, playerNameBanned);
-
-			format(aString, sizeof(aString), "INSERT INTO bans(playerNameBanned,playerBannedBy,playerBanReason,IPBanned) VALUES('%s','%s','%s','%s')", playerNameBanned, szPlayerName, playerBanReason, playerIP);
-			mysql_query(aString, THREAD_BAN_PLAYER, playerBanID);
-		}
-	}
-	return 1;
-}
-
-CMD:kick(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 1) {
-	    new
-	        playerKickID,
-	        playerKickReason[60];
-
-	    if(sscanf(params, "us[60]", playerKickID, playerKickReason))
-	        return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/kick [playerid] [reason]");
-
-		if(playerVariables[playerKickID][pAdminLevel] >= playerVariables[playerid][pAdminLevel])
-			return SendClientMessage(playerid, COLOR_GREY, "You can't kick a higher (or equal) level administrator.");
-
-	    if(playerKickID == INVALID_PLAYER_ID)
-			return SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-
-  		new
-
-            playerNameKicked[MAX_PLAYER_NAME],
-            aString[128];
-
-		GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
-		GetPlayerName(playerKickID, playerNameKicked, MAX_PLAYER_NAME);
-
-       	format(aString, sizeof(aString), "Kick: %s has been kicked by %s, reason: %s", playerNameKicked, playerVariables[playerid][pAdminName], playerKickReason);
-       	SendClientMessageToAll(COLOR_LIGHTRED, aString);
-       	mysql_real_escape_string(aString, aString);
-       	adminLog(aString);
-
-       	Kick(playerKickID);
-	}
-	return 1;
-}
-
-CMD:fine(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 2) {
-
-	    new
-	        ID,
-			amount,
-	        reason[60];
-
-	    if(sscanf(params, "uds[60]", ID, amount, reason))
-	        return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/fine [playerid] [amount] [reason]");
-
-	    if(playerVariables[ID][pAdminLevel] >= playerVariables[playerid][pAdminLevel])
-			return SendClientMessage(playerid, COLOR_GREY, "You can't fine a higher (or equal) level administrator.");
-
-        if(ID == INVALID_PLAYER_ID)
-			return SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-
-		if(amount <= 0)
-			return SendClientMessage(playerid, COLOR_GREY, "Invalid amount specified.");
-
-       	new
-       	    playerFined[MAX_PLAYER_NAME],
-       	    string[128];
-
-		GetPlayerName(ID, playerFined, MAX_PLAYER_NAME);
-
-       	format(string, sizeof(string), "Fine: %s has been fined $%d by %s, reason: %s", playerFined, amount, playerVariables[playerid][pAdminName], reason);
-       	SendClientMessageToAll(COLOR_LIGHTRED, string);
-       	mysql_real_escape_string(string, string);
-       	adminLog(string);
-
-		playerVariables[ID][pMoney] -= amount;
-	}
-	return 1;
-}
-
-CMD:mute(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 2) {
-
-	    new
-	        ID;
-
-	    if(sscanf(params, "u", ID))
-	        return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/mute [playerid]");
-
-        if(playerVariables[ID][pAdminLevel] > 0)
-			return SendClientMessage(playerid, COLOR_GREY, "You can't mute an administrator.");
-
-        if(ID == INVALID_PLAYER_ID)
-			return SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-
-  		new
-
-            string[55];
-
-		switch(playerVariables[ID][pMuted]) {
-			case 0: {
-				format(string, sizeof(string), "Administrator %s has muted you.", playerVariables[playerid][pAdminName]);
-				SendClientMessage(ID, COLOR_WHITE, string);
-
-				GetPlayerName(ID, szPlayerName, MAX_PLAYER_NAME);
-				format(string, sizeof(string), "You have muted %s.", szPlayerName);
-				SendClientMessage(playerid, COLOR_WHITE, string);
-
-				playerVariables[ID][pMuted] = -1;
-			}
-			default: {
-				format(string, sizeof(string), "Administrator %s has unmuted you.", playerVariables[playerid][pAdminName]);
-				SendClientMessage(ID, COLOR_WHITE, string);
-
-				GetPlayerName(ID, szPlayerName, MAX_PLAYER_NAME);
-				format(string, sizeof(string), "You have unmuted %s.", szPlayerName);
-				SendClientMessage(playerid, COLOR_WHITE, string);
-
-				playerVariables[ID][pMuted] = 0;
-			}
-		}
-	}
-	return 1;
-}
-
-CMD:omute(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 2) {
-
-	    new
-	        ID;
-
-	    if(sscanf(params, "u", ID))
-	        return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/omute [playerid]");
-
-        if(playerVariables[ID][pAdminLevel] > 0)
-			return SendClientMessage(playerid, COLOR_GREY, "You can't mute an administrator.");
-
-        if(ID == INVALID_PLAYER_ID)
-			return SendClientMessage(playerid, COLOR_GREY, "The specified player ID is either not connected or has not authenticated.");
-
-       	new
-
-       	    string[88];
-
-		switch(playerVariables[ID][pOOCMuted]) {
-			case 0: {
-				format(string, sizeof(string), "Administrator %s has muted you from speaking in global OOC chat.", playerVariables[playerid][pAdminName]);
-				SendClientMessage(ID, COLOR_WHITE, string);
-
-				GetPlayerName(ID, szPlayerName, MAX_PLAYER_NAME);
-				format(string, sizeof(string), "You have muted %s from speaking in global OOC chat.", szPlayerName);
-				SendClientMessage(playerid, COLOR_WHITE, string);
-
-				playerVariables[ID][pOOCMuted] = 1;
-			}
-			default: {
-				format(string, sizeof(string), "Administrator %s has unmuted you from global OOC chat.", playerVariables[playerid][pAdminName]);
-				SendClientMessage(ID, COLOR_WHITE, string);
-
-				GetPlayerName(ID, szPlayerName, MAX_PLAYER_NAME);
-				format(string, sizeof(string), "You have unmuted %s from the global OOC chat.", szPlayerName);
-				SendClientMessage(playerid, COLOR_WHITE, string);
-
-				playerVariables[ID][pOOCMuted] = 0;
-			}
-		}
-	}
-	return 1;
-}
-
-CMD:eventproperties(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 3) {
-
-		new
-			stringSplitter[8]; // Split the parameters here first (in case sscanf returns 1) so it isn't passed straight to the event vars.
-
-		if(sscanf(params, "dddddddd", stringSplitter[0], stringSplitter[1], stringSplitter[2], stringSplitter[3], stringSplitter[4], stringSplitter[5], stringSplitter[6], stringSplitter[7]))
-			return SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/eventproperties [health] [armour] [skin] [weapon 1] [weapon 2] [weapon 3] [weapon 4] [weapon 5]");
-
-		if(IsValidSkin(stringSplitter[3])) {
-
-			// Set the parameters from the command
-			eventVariables[eArmourHP][0] = stringSplitter[0];
-			eventVariables[eArmourHP][1] = stringSplitter[1];
-			eventVariables[eEventSkin] = stringSplitter[2];
-
-			eventVariables[eEventWeapons][0] = stringSplitter[3];
-			eventVariables[eEventWeapons][1] = stringSplitter[4];
-			eventVariables[eEventWeapons][2] = stringSplitter[5];
-			eventVariables[eEventWeapons][3] = stringSplitter[6];
-			eventVariables[eEventWeapons][4] = stringSplitter[7];
-
-			eventVariables[eEventVW] = GetPlayerVirtualWorld(playerid);
-			eventVariables[eEventInt] = GetPlayerInterior(playerid);
-
-			GetPlayerPos(playerid, eventVariables[eEventPos][0], eventVariables[eEventPos][1], eventVariables[eEventPos][2]);
-
-			SendClientMessage(playerid, COLOR_WHITE, "The event properties have successfully been set - you may now /startevent, or change the properties again.");
-		}
-		else SendClientMessage(playerid, COLOR_GREY, "Invalid skin specified.");
-	}
-	return 1;
-}
-
-CMD:startevent(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 3) {
-
-		new
-			string[93];
-
-		if(eventVariables[eEventSkin] == 0)
-			return SendClientMessage(playerid, COLOR_GREY, "No event properties have been set.");
-
-		switch(eventVariables[eEventStat]) {
-			case 0: {
-				format(string, sizeof(string), "Administrator %s has set up an event - type /joinevent to participate!", playerVariables[playerid][pAdminName]);
-				SendClientMessageToAll(COLOR_LIGHTRED, string);
-
-				eventVariables[eEventStat] = 1;
-			}
-			case 1: {
-				format(string, sizeof(string), "Administrator %s has started the event. Best of luck playing!", playerVariables[playerid][pAdminName]);
-				SendClientMessageToAll(COLOR_LIGHTRED, string);
-
-				foreach(Player, i) {
-					if(playerVariables[i][pStatus] == 1 && playerVariables[i][pEvent] == 1) { // Authenticated & joined
-
-						for(new x; x < 5; x++) {
-							if(eventVariables[eEventWeapons][x] >= 1 && eventVariables[eEventWeapons][x] <= 46) {
-								GivePlayerWeapon(i, eventVariables[eEventWeapons][x], 999999);
-							}
-						}
-						TogglePlayerControllable(i, true);
-						SendClientMessage(i, COLOR_WHITE, "Good luck! Everyone will be refunded, so have fun and play fair.");
-					}
-				}
-				eventVariables[eEventStat] = 2;
-			}
-			default: SendClientMessage(playerid, COLOR_GREY, "An event is already in progress - use /endevent to close it.");
-		}
-	}
-	return 1;
-}
-
-CMD:endevent(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 3) {
-
-		new
-			string[128];
-
-		switch(eventVariables[eEventStat]) {
-			case 0: SendClientMessage(playerid, COLOR_GREY, "There is currently no active event to close.");
-			default: {
-				foreach(Player, i) {
-					if(playerVariables[playerid][pEvent] == 1) {
-
-						TogglePlayerControllable(i, true);
-
-						ResetPlayerWeapons(i);
-						givePlayerWeapons(i);
-
-						SetPlayerPos(i, playerVariables[i][pPos][0], playerVariables[i][pPos][1], playerVariables[i][pPos][2]);
-						SetPlayerInterior(i, playerVariables[i][pInterior]);
-						SetPlayerVirtualWorld(i, playerVariables[i][pVirtualWorld]);
-						SetPlayerSkin(i, playerVariables[i][pSkin]);
-						SetCameraBehindPlayer(i);
-
-						if(playerVariables[i][pAdminDuty] == 1) {
-							SetPlayerHealth(i, 500000.0);
-							SetPlayerArmour(i, 0.0);
-						}
-						else {
-							SetPlayerHealth(i, playerVariables[i][pHealth]);
-							SetPlayerArmour(i, playerVariables[i][pArmour]);
-						}
-
-						playerVariables[i][pEvent] = 0;
-
-					}
-				}
-				format(string, sizeof(string), "Administrator %s has closed the event.", playerVariables[playerid][pAdminName]);
-				SendClientMessageToAll(COLOR_LIGHTRED, string);
-				eventVariables[eEventStat] = 0;
-				eventVariables[eEventCount] = 0;
-
-				eventVariables[eEventSkin] = 0;
-			}
-		}
-    }
-    return 1;
-}
-
-CMD:joinevent(playerid, params[]) {
-	switch(eventVariables[eEventStat]) {
-		case 1: {
-			if(playerVariables[playerid][pEvent] == 0) {
-				switch(GetPlayerState(playerid)) {
-					case 1, 2, 3: {
-						foreach(Player, x) {
-							if(playerVariables[x][pDrag] == playerid) {
-								return SendClientMessage(playerid, COLOR_GREY, "You can't participate in an event while dragging someone - stop dragging them first.");
-							}
-						}
-						if(playerVariables[playerid][pSpectating] != INVALID_PLAYER_ID) {
-							return SendClientMessage(playerid, COLOR_GREY, "You can't join an event while spectating - finish your spectating session first.");
-						}
-						else if(playerVariables[playerid][pFreezeType] == 0 && playerVariables[playerid][pPrisonID] == 0 && playerVariables[playerid][pDrag] == -1) {
-							if(playerVariables[playerid][pAdminDuty] == 0) { // If they're on aduty, GetPlayerHealth returns crap like 32.2 HP.
-								GetPlayerHealth(playerid, playerVariables[playerid][pHealth]);
-								GetPlayerArmour(playerid, playerVariables[playerid][pArmour]);
-							}
-
-							GetPlayerPos(playerid, playerVariables[playerid][pPos][0], playerVariables[playerid][pPos][1], playerVariables[playerid][pPos][2]);
-							playerVariables[playerid][pInterior] = GetPlayerInterior(playerid);
-							playerVariables[playerid][pVirtualWorld] = GetPlayerVirtualWorld(playerid);
-
-							TogglePlayerControllable(playerid, false);
-							playerVariables[playerid][pEvent] = 1;
-
-							ResetPlayerWeapons(playerid);
-
-							SetPlayerPos(playerid, eventVariables[eEventPos][0], eventVariables[eEventPos][1], eventVariables[eEventPos][2]);
-							SetPlayerInterior(playerid, eventVariables[eEventInt]);
-							SetPlayerVirtualWorld(playerid, eventVariables[eEventVW]);
-							SetPlayerSkin(playerid, eventVariables[eEventSkin]);
-							SetPlayerHealth(playerid, eventVariables[eArmourHP][0]);
-							SetPlayerArmour(playerid, eventVariables[eArmourHP][1]);
-
-							eventVariables[eEventCount]++;
-
-							SendClientMessage(playerid, COLOR_WHITE, "You have joined the event - please wait patiently, it will be started shortly.");
-						}
-						else SendClientMessage(playerid, COLOR_GREY, "You can't participate in an event while frozen, jailed, prisoned, or while being dragged.");
-					}
-					default: SendClientMessage(playerid, COLOR_GREY, "You must spawn before joining an event.");
-				}
-			}
-			else SendClientMessage(playerid, COLOR_GREY, "You are already participating in an event.");
-		}
-		case 2: SendClientMessage(playerid, COLOR_GREY, "The event has already started - you have missed it.");
-		default: SendClientMessage(playerid, COLOR_GREY, "There is currently no active event to join.");
-	}
-	return 1;
-}
-
-CMD:savedata(playerid, params[]) {
-    if(playerVariables[playerid][pAdminLevel] >= 5) {
-        foreach(Player, x) {
-			savePlayerData(x);
-		}
-		SendClientMessage(playerid, COLOR_YELLOW, "Player data saved.");
-
-		for(new xh = 0; xh < MAX_HOUSES; xh++) {
-            saveHouse(xh);
-		}
-		SendClientMessage(playerid, COLOR_YELLOW, "House data saved.");
-
-		for(new xf = 0; xf < MAX_GROUPS; xf++) {
-            saveGroup(xf);
-		}
-		SendClientMessage(playerid, COLOR_YELLOW, "Group data saved.");
-
-		for(new xf = 0; xf < MAX_BUSINESSES; xf++) {
-            saveBusiness(xf);
-		}
-		SendClientMessage(playerid, COLOR_YELLOW, "Business data saved.");
-
-		for(new xf = 0; xf < MAX_ASSETS; xf++) {
-            saveAsset(xf);
-		}
-		SendClientMessage(playerid, COLOR_YELLOW, "Server asset data saved.");
-    }
-
-    return 1;
-}
-
-CMD:gmx(playerid, params[]) {
-    if(playerVariables[playerid][pAdminLevel] >= 5) {
-		ShowPlayerDialog(playerid, DIALOG_GMX, DIALOG_STYLE_MSGBOX, "Server Restart", "Please confirm whether you are positive that you wish to initiate a server restart?", "Yes", "No");
-    }
-    return 1;
-}
-
-CMD:unbanip(playerid, params[]) {
-    if(playerVariables[playerid][pAdminLevel] >= 3) {
-		if(!isnull(params)) {
-		    if(strlen(params) < 20) {
-		        mysql_real_escape_string(params, szPlayerName);
-				format(szQueryOutput, sizeof(szQueryOutput), "DELETE FROM bans WHERE IPBanned = '%s'", szPlayerName);
-				mysql_query(szQueryOutput, THREAD_UNBAN_IP, playerid);
-		    } else return SendClientMessage(playerid, COLOR_GREY, "Invalid IP length.");
-		} else SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/unbanip [internet protocol address]");
-	}
-	return 1;
-}
-
-CMD:unban(playerid, params[]) {
-    if(playerVariables[playerid][pAdminLevel] >= 3) {
-		if(!isnull(params)) {
-		    if(strlen(params) < MAX_PLAYER_NAME) {
-				mysql_real_escape_string(params, szPlayerName);
-				SetPVarString(playerid, "playerNameUnban", szPlayerName);
-				format(szQueryOutput, sizeof(szQueryOutput), "SELECT * FROM `playeraccounts` WHERE `playerName` = '%s'", szPlayerName);
-				mysql_query(szQueryOutput, THREAD_CHECK_PLAYER_NAME_BANNED, playerid);
-			}
-			else {
-				SendClientMessage(playerid, COLOR_GREY, "Invalid name length specified (1-24).");
-			}
-		}
-		else {
-		    SendClientMessage(playerid, COLOR_GREY, SYNTAX_MESSAGE"/unban [account name]");
-		}
-	}
-	return 1;
 }
 
 CMD:buyhouse(playerid, params[]) {
