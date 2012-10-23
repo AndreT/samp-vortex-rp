@@ -266,19 +266,13 @@ forward                 invalidNameChange(playerid);
 forward                 playerTabbedLoop();
 forward                 genderSelection(const playerid);
 forward                 loginCheck(playerid);
-
-#if !defined NO_IRC
-	forward IRCBotDelay();
-#endif
-
 forward					VendDrink(playerid);
-
 forward                 antiCheat();
-
 native					WP_Hash(buffer[], len, const str[]);
 
 #if !defined NO_IRC
 	#include <irc>
+	#include "vx-irc.pwn"
 #endif
 
 main() {
@@ -521,11 +515,6 @@ new tutorialSkins[73] = {
 	67, 68, 69, 70, 72, 73, 75, 76, 77, 78, 79, 299
 };
 
-#if !defined NO_IRC
-	new
-	    scriptBots[MAX_BOTS];
-#endif
-
 new Float:JailSpawns[4][3] = {
 
 	{ 227.46, 110.0, 999.02 },
@@ -573,6 +562,7 @@ new VehicleNames[212][] = // Keeping unnecessary bits out (easily calculated int
 };
 
 new
+	temp,
 	databaseConnection,
 	pingTick,
 	adTick,
@@ -640,6 +630,7 @@ public OnGameModeInit() {
 	UsePlayerPedAnims();
 	
 	#if !defined NO_IRC
+		// Delay IRC bot connections in case something goes wrong
 		scriptTimers[4] = SetTimer("IRCBotDelay", 5000, false); // Run a timer to delay the bots from connecting, incase of the script going crazy!!1
 	#endif
 	
@@ -937,67 +928,6 @@ public OnGameModeInit() {
 	
 	return 1;
 }
-
-#if !defined NO_IRC
-public IRCBotDelay() {
-	scriptBots[0] = IRC_Connect(IRC_SERVER, IRC_PORT, "YOURBOTNAME", "Maurice Moss", "VXRP2SCRIPT");
-	return 1;
-}
-
-public IRC_OnConnect(botid) {
-    IRC_SendRaw(scriptBots[0], "PRIVMSG NickServ :IDENTIFY "IRC_BOT_PASS);
-    IRC_JoinChannel(scriptBots[0], IRC_CHANNEL_MAIN);
-    IRC_JoinChannel(scriptBots[0], IRC_STAFF_CHANNEL, IRC_STAFF_CHANNEL_PASSWORD);
-	return 1;
-}
-
-public IRC_OnJoinChannel(botid, channel[]) {
-	if(!strcmp(channel, IRC_CHANNEL_MAIN, true))
-		IRC_Say(scriptBots[0], IRC_CHANNEL_MAIN, "Server started. Release: "SERVER_VERSION".");
-
-	return 1;
-}
-
-public IRC_OnLeaveChannel(botid, channel[], message[]) {
-	if(!strcmp(channel, IRC_CHANNEL_MAIN)) {
-	    IRC_JoinChannel(scriptBots[0], IRC_CHANNEL_MAIN);
-	} else if(!strcmp(channel, IRC_STAFF_CHANNEL)) {
-	    IRC_JoinChannel(scriptBots[0], IRC_STAFF_CHANNEL, IRC_STAFF_CHANNEL_PASSWORD);
-	}
-	
-	return 1;
-}
-
-public IRC_OnDisconnect(botid) {
-	return SetTimer("IRCBotDelay", 5000, false);
-}
-
-public IRC_OnUserSay(botid, recipient[], user[], host[], message[]) {
-	if(systemVariables[OOCStatus] == 0) {
-	    if(!strcmp(recipient, IRC_CHANNEL_MAIN, true)) {
-	  		format(szMessage, sizeof(szMessage), "(( %s says [on IRC]: %s ))", user, message);
-
-			foreach(Player, x) {
-				if(playerVariables[x][pSeeOOC] == 1) {
-				    GetPlayerName(x, szPlayerName, MAX_PLAYER_NAME);
-				    if(strfind(szPlayerName, message, true, 0) != -1) {
-						SendClientMessage(x, COLOR_LIGHT, szMessage);
-						PlayerPlaySound(x, 1057, 0, 0, 0);
-					}
-					else {
-					    SendClientMessage(x, COLOR_LIGHT, szMessage);
-					}
-				}
-			}
-		}
-		else if(!strcmp(recipient, IRC_STAFF_CHANNEL, true)) {
-		    format(szMessage, sizeof(szMessage), "* Admin %s says [on IRC]: %s", user, message);
-		    submitToAdmins(szMessage, COLOR_YELLOW);
-		}
-	}
-	return 1;
-}
-#endif
 
 stock loadATMs() {
 	mysql_query("SELECT * FROM atms", THREAD_LOAD_ATMS);
@@ -16981,10 +16911,14 @@ CMD:call(playerid, params[]) {
 	return 1;
 }
 
-CMD:pickup(playerid, params[]) {
-	foreach(Player, i) { // Setting the current-call var to the ID of the person calling.
-		if(playerVariables[i][pPhoneCall] == playerid) {
-
+CMD:p(playerid) return cmd_pickup(playerid);
+CMD:pickup(playerid) 
+{
+	foreach(Player, i) 
+	{
+		// Setting the current-call var to the ID of the person calling.
+		if(playerVariables[i][pPhoneCall] == playerid) 
+		{
 			playerVariables[playerid][pPhoneCall] = i;
 			SendClientMessage(playerid, COLOR_WHITE, "You have answered your phone.");
 			SendClientMessage(playerVariables[playerid][pPhoneCall], COLOR_WHITE, "The other person has answered the call.");
@@ -16994,147 +16928,45 @@ CMD:pickup(playerid, params[]) {
 	return 1;
 }
 
-CMD:p(playerid, params[]) {
-	return cmd_pickup(playerid, params);
-}
-
-CMD:h(playerid, params[]) {
-	return cmd_hangup(playerid, params);
-}
-
-CMD:togphone(playerid, params[]) {
-	if(playerVariables[playerid][pPhoneNumber] != -1) {
-		if(playerVariables[playerid][pPhoneStatus] == 1) {
-		    playerVariables[playerid][pPhoneStatus] = 0;
-		    SendClientMessage(playerid, COLOR_WHITE, "Your phone has been turned off.");
-		}
-		else {
-		    playerVariables[playerid][pPhoneStatus] = 1;
-		    SendClientMessage(playerid, COLOR_WHITE, "Your phone is now switched on.");
-		}
+CMD:togphone(playerid, params[]) 
+{
+	if(playerVariables[playerid][pPhoneNumber] == -1)
+	{
+		SendClientMessage(playerid, COLOR_GREY, "You don't have a phone.");
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "You don't have a phone.");
+	else if(playerVariables[playerid][pPhoneStatus] == 1)
+	{
+		playerVariables[playerid][pPhoneStatus] = 0;
+		SendClientMessage(playerid, COLOR_WHITE, "Your phone is now switched off.");
+	}
+	else if(playerVariables[playerid][pPhoneStatus] == 0)
+	{
+		playerVariables[playerid][pPhoneStatus] = 1;
+		SendClientMessage(playerid, COLOR_WHITE, "Your phone is now switched on.");
+	}
 	return 1;
 }
 
-CMD:hangup(playerid, params[]) {
-
+CMD:h(playerid) return cmd_hangup(playerid);
+CMD:hangup(playerid) 
+{
 	if(playerVariables[playerid][pPhoneCall] != -1)
 		SendClientMessage(playerid, COLOR_WHITE, "You have terminated the current call.");
 
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USECELLPHONE)
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
 
-	if(playerVariables[playerid][pPhoneCall] != -1 && playerVariables[playerid][pPhoneCall] < MAX_PLAYERS) { // Valid values are 0-MAX_PLAYERS, 911 and such are used for 911 calls.
-		SendClientMessage(playerVariables[playerid][pPhoneCall], COLOR_WHITE, "Your call has been terminated by the other party.");
-
-		if(GetPlayerSpecialAction(playerVariables[playerid][pPhoneCall]) == SPECIAL_ACTION_USECELLPHONE)
-			SetPlayerSpecialAction(playerVariables[playerid][pPhoneCall], SPECIAL_ACTION_STOPUSECELLPHONE);
-
-		playerVariables[playerVariables[playerid][pPhoneCall]][pPhoneCall] = -1;
+	temp = playerVariables[playerid][pPhoneCall];
+	if(-1 < temp < MAX_PLAYERS) // Valid values: 0 - MAX_PLAYERS (911 and such are used for special calls)
+	{
+		SendClientMessage(temp, COLOR_WHITE, "Your call has been terminated by the other party.");
+		
+		if(GetPlayerSpecialAction(temp) == SPECIAL_ACTION_USECELLPHONE)
+			SetPlayerSpecialAction(temp, SPECIAL_ACTION_STOPUSECELLPHONE);
+			
+		playerVariables[temp][pPhoneCall] = -1;
 	}
-
+	
 	playerVariables[playerid][pPhoneCall] = -1;
 	return 1;
 }
-
-#if !defined NO_IRC
-IRCCMD:admins(botid, channel[], user[], host[], params[]) {
-    if(!strcmp(channel, IRC_CHANNEL_MAIN, true)) {
-		new
-		    msgSz[32],
-		    playerCount;
-
-		foreach(Player, i) {
-		    if(playerVariables[i][pAdminDuty] >= 1) playerCount++;
-		}
-
-		format(msgSz, sizeof(msgSz), "Server (Active) Admin Count: %d", playerCount);
-		IRC_Say(scriptBots[0], IRC_CHANNEL_MAIN, msgSz);
-	}
-	return 1;
-}
-
-IRCCMD:players(botid, channel[], user[], host[], params[]) {
-    if(!strcmp(channel, IRC_CHANNEL_MAIN, true)) {
-		new
-		    msgSz[32],
-		    playerCount;
-
-		foreach(Player, i) {
-			playerCount++;
-		}
-
-		format(msgSz, sizeof(msgSz), "Server Player Count: %d", playerCount);
-		IRC_Say(scriptBots[0], IRC_CHANNEL_MAIN, msgSz);
-	}
-	return 1;
-}
-
-IRCCMD:savedata(botid, channel[], user[], host[], params[]) {
-    if(!strcmp(channel, IRC_CHANNEL_MAIN, true)) {
-	    if(IRC_IsHalfop(scriptBots[0], IRC_CHANNEL_MAIN, user) || IRC_IsOp(scriptBots[0], IRC_CHANNEL_MAIN, user) || IRC_IsOwner(scriptBots[0], IRC_CHANNEL_MAIN, user)) {
-	        foreach(Player, x) {
-				savePlayerData(x);
-			}
-			IRC_Say(scriptBots[0], channel, "Player data saved.");
-
-			for(new xh = 0; xh < MAX_HOUSES; xh++) {
-	            saveHouse(xh);
-			}
-			IRC_Say(scriptBots[0], channel, "House data saved.");
-
-			for(new xf = 0; xf < MAX_GROUPS; xf++) {
-	            saveGroup(xf);
-			}
-			IRC_Say(scriptBots[0], channel, "Group data saved.");
-
-			for(new xf = 0; xf < MAX_BUSINESSES; xf++) {
-	            saveBusiness(xf);
-			}
-			IRC_Say(scriptBots[0], channel, "Business data saved.");
-
-			for(new xf = 0; xf < MAX_ASSETS; xf++) {
-	            saveAsset(xf);
-			}
-			IRC_Say(scriptBots[0], channel, "Asset data saved.");
-
-			return 1;
-		}
-	}
-
-	return 1;
-}
-
-IRCCMD:kickplayer(botid, channel[], user[], host[], params[]) {
-    if(!strcmp(channel, IRC_CHANNEL_MAIN, true)) {
-		if(IRC_IsHalfop(scriptBots[0], IRC_CHANNEL_MAIN, user) || IRC_IsOp(scriptBots[0], IRC_CHANNEL_MAIN, user) || IRC_IsOwner(scriptBots[0], IRC_CHANNEL_MAIN, user)) {
-		    new
-		        playerKickID,
-		        playerKickReason[128];
-
-		    if(sscanf(params, "us[128]", playerKickID, playerKickReason))
-				return IRC_Say(scriptBots[0], user, SYNTAX_MESSAGE"/kick [id/name] [reason]");
-
-		    if(IsPlayerConnected(playerKickID)) {
-
-				new
-					msgSz[128];
-
-				GetPlayerName(playerKickID, szPlayerName, MAX_PLAYER_NAME);
-				format(msgSz, sizeof(msgSz), "Kick: %s has been kicked by %s (via IRC), reason: %s", szPlayerName, user, playerKickReason);
-				SendClientMessageToAll(COLOR_LIGHTRED, msgSz);
-				IRC_Say(scriptBots[0], IRC_CHANNEL_MAIN, msgSz);
-
-				OnPlayerDisconnect(playerKickID, 2); // OnPlayerDisconnect isn't called for IRC kicks... strange.
-				Kick(playerKickID);
-		    }
-		    else {
-		        return IRC_Say(scriptBots[0], user, "Not connected.");
-		    }
-		}
-	}
-	return 1;
-}
-
-#endif
