@@ -1964,82 +1964,31 @@ public antiCheat()
 {
 	foreach(Player, i) 
 	{
-	    if(playerVariables[i][pStatus] == 1) 
+		if(playerVariables[i][pStatus] == 1 && playerVariables[i][pAdminLevel] < 3)
 		{
-		    if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK && playerVariables[i][pJetpack] == 0 && playerVariables[i][pAdminLevel] < 1) {
-		        scriptBan(i, "Hacking (Jetpack)");
-		    }
-			if(playerVariables[i][pAdminLevel] < 3 && playerVariables[i][pEvent] == 0 && playerVariables[i][pAnticheatExemption] == 0) {
-				if(GetPlayerWeapon(i) >= 1 && GetPlayerState(i) == 1) {
-					if(playerVariables[i][pWeapons][0] != 1 && GetPlayerWeapon(i) == 1) hackerTrigger(i);
-
-					if(playerVariables[i][pWeapons][1] != 2 && GetPlayerWeapon(i) == 2) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][1] != 3 && GetPlayerWeapon(i) == 3) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][1] != 4 && GetPlayerWeapon(i) == 4) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][1] != 5 && GetPlayerWeapon(i) == 5) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][1] != 6 && GetPlayerWeapon(i) == 6) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][1] != 7 && GetPlayerWeapon(i) == 7) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][1] != 8 && GetPlayerWeapon(i) == 8) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][1] != 9 && GetPlayerWeapon(i) == 9) hackerTrigger(i);
-
-					if(playerVariables[i][pWeapons][2] != 22 && GetPlayerWeapon(i) == 22) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][2] != 23 && GetPlayerWeapon(i) == 23) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][2] != 24 && GetPlayerWeapon(i) == 24) hackerTrigger(i);
-
-					if(playerVariables[i][pWeapons][3] != 25 && GetPlayerWeapon(i) == 25) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][3] != 26 && GetPlayerWeapon(i) == 26) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][3] != 27 && GetPlayerWeapon(i) == 27) hackerTrigger(i);
-
-					if(playerVariables[i][pWeapons][4] != 28 && GetPlayerWeapon(i) == 28) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][4] != 29 && GetPlayerWeapon(i) == 29) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][4] != 32 && GetPlayerWeapon(i) == 32) hackerTrigger(i);
-
-					if(playerVariables[i][pWeapons][5] != 30 && GetPlayerWeapon(i) == 30) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][5] != 31 && GetPlayerWeapon(i) == 31) hackerTrigger(i);
-
-					if(playerVariables[i][pWeapons][6] != 33 && GetPlayerWeapon(i) == 33) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][6] != 34 && GetPlayerWeapon(i) == 34) hackerTrigger(i);
-
-					if(playerVariables[i][pWeapons][7] != 35 && GetPlayerWeapon(i) == 35) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][7] != 36 && GetPlayerWeapon(i) == 36) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][7] != 37 && GetPlayerWeapon(i) == 37) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][7] != 38 && GetPlayerWeapon(i) == 38) hackerTrigger(i);
-
-					if(playerVariables[i][pWeapons][8] != 16 && GetPlayerWeapon(i) == 16) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][8] != 17 && GetPlayerWeapon(i) == 17) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][8] != 18 && GetPlayerWeapon(i) == 18) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][8] != 39 && GetPlayerWeapon(i) == 39) hackerTrigger(i);
-
-					if(playerVariables[i][pWeapons][9] != 41 && GetPlayerWeapon(i) == 41) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][9] != 42 && GetPlayerWeapon(i) == 42) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][9] != 43 && GetPlayerWeapon(i) == 43) hackerTrigger(i);
-
-					if(playerVariables[i][pWeapons][10] != 10 && GetPlayerWeapon(i) == 10) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][10] != 11 && GetPlayerWeapon(i) == 11) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][10] != 12 && GetPlayerWeapon(i) == 12) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][10] != 13 && GetPlayerWeapon(i) == 13) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][10] != 14 && GetPlayerWeapon(i) == 14) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][10] != 15 && GetPlayerWeapon(i) == 15) hackerTrigger(i);
-
-					if(playerVariables[i][pWeapons][11] != 44 && GetPlayerWeapon(i) == 44) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][11] != 45 && GetPlayerWeapon(i) == 45) hackerTrigger(i);
-					if(playerVariables[i][pWeapons][11] != 46 && GetPlayerWeapon(i) == 46) hackerTrigger(i);
-
-					if(playerVariables[i][pWeapons][12] != 40 && GetPlayerWeapon(i) == 40) hackerTrigger(i);
+			if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK && playerVariables[i][pJetpack] == 0 && playerVariables[i][pAdminLevel] == 0)
+			{
+				scriptBan(i, "Hacking (jetpack)");
+			}
+			else if(playerVariables[i][pEvent] == 0 && playerVariables[i][pAnticheatExemption] == 0)
+			{
+				temp = GetPlayerWeapon(i);
+				if(temp > 0 && GetPlayerState(i) == 1)
+				{
+					if(playerVariables[i][pWeapons][GetWeaponSlot(temp)] != temp)
+						hackerTrigger(i);
 				}
-				else if(eventVariables[eEventStat] != 0) { // Event anticheat - check 5 event weapon slots, checks if the weapon is valid (in case of a bug).
-
-					new
-						wep = GetPlayerWeapon(i); // so we don't call getplayerweapon a million times!1
-
-					if(eventVariables[eEventWeapons][0] != wep && eventVariables[eEventWeapons][1] != wep && eventVariables[eEventWeapons][2] != wep && eventVariables[eEventWeapons][3] != wep && eventVariables[eEventWeapons][4] != wep) { // Valid weapon check (in case someone has admin weapons)
-						 if(playerVariables[i][pWeapons][GetWeaponSlot(wep)] != wep) hackerTrigger(i);
+				else if(eventVariables[eEventStat] != 0) // Event anticheat - check 5 event weapon slots, checks if the weapon is valid (in case of a bug).
+				{
+					// Valid weapon check (in case someone has admin weapons)
+					if(eventVariables[eEventWeapons][0] != temp && eventVariables[eEventWeapons][1] != temp && eventVariables[eEventWeapons][2] != temp && eventVariables[eEventWeapons][3] != temp && eventVariables[eEventWeapons][4] != temp) 
+					{ 
+						 if(playerVariables[i][pWeapons][GetWeaponSlot(temp)] != temp) hackerTrigger(i);
 					}
 				}
 			}
 		}
 	}
-
 	return 1;
 }
 
