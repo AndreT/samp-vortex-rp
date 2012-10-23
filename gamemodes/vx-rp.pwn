@@ -2989,7 +2989,7 @@ public OnQueryFinish(query[], resultid, extraid, connectionHandle) {
 				if(playerVariables[extraid][pAdminDuty] == 1 && playerVariables[extraid][pAdminLevel] < 1) {
 					playerVariables[extraid][pAdminLevel] = 0;
 					playerVariables[extraid][pAdminDuty] = 0;
-					format(playerVariables[extraid][pAdminName], MAX_PLAYER_NAME, "(null)");
+					playerVariables[extraid][pAdminName][0] = '*';
 					SendClientMessage(extraid, COLOR_HOTORANGE, "You're no longer an administrator.");
 				}
 
@@ -8159,17 +8159,16 @@ stock resetPlayerVariables(const playerid) {
 		x++;
 	}
 
-	format(playerVariables[playerid][pWarning1], 32, "(null)");
-	format(playerVariables[playerid][pWarning2], 32, "(null)");
-	format(playerVariables[playerid][pWarning3], 32, "(null)");
-	format(playerVariables[playerid][pEmail], 255, "(null)");
-	format(playerVariables[playerid][pReportMessage], 64, "(null)");
+	playerVariables[playerid][pWarning1][0] = '*';
+	playerVariables[playerid][pWarning2][0] = '*';
+	playerVariables[playerid][pWarning3][0] = '*';
+	playerVariables[playerid][pEmail][0] = '*';
+	playerVariables[playerid][pPassword][0] = '*';
+	playerVariables[playerid][pAdminName][0] = '*';
+	playerVariables[playerid][pConnectionIP][0] = '*';
+	format(playerVariables[playerid][pAccent], 32, "American");
 	format(playerVariables[playerid][pCarLicensePlate], 32, "3VFT W%d", 10+random(80));
-	format(playerVariables[playerid][pPassword], 129, "(null)");
-	format(playerVariables[playerid][pAccent], 20, "American");
-	format(playerVariables[playerid][pAdminName], MAX_PLAYER_NAME, "(null)");
-	format(playerVariables[playerid][pConnectionIP], 32, "(null)");
-
+	
 	GetPlayerName(playerid, playerVariables[playerid][pNormalName], MAX_PLAYER_NAME);
 
 	playerVariables[playerid][pConnectedSeconds] = 0;
@@ -10384,7 +10383,6 @@ CMD:destroyspike(playerid, params[]) {
 				for(new i; i < 4; i++) spikeVariables[targetID][sPos][i] = 0;
 
 				spikeVariables[targetID][sObjID] = INVALID_OBJECT_ID;
-				format(spikeVariables[targetID][sDeployer], MAX_PLAYER_NAME, "(null)");
 
 				format(string, sizeof(string), "You have successfully destroyed spike ID %d.", targetID);
 				SendClientMessage(playerid, COLOR_WHITE, string);
@@ -11968,14 +11966,20 @@ CMD:setadminlevel(playerid, params[]) {
 	return 1;
 }
 
-CMD:adminduty(playerid, params[]) {
-	if(playerVariables[playerid][pAdminLevel] >= 1) {
-		if(!strcmp(playerVariables[playerid][pAdminName], "(null)", true)) {
-			return SendClientMessage(playerid, COLOR_GREY, "You don't have an admin name set. Contact a Head Admin (or higher) first.");
+CMD:adminduty(playerid, params[]) 
+{
+	if(playerVariables[playerid][pAdminLevel] >= 1) 
+	{
+		if(playerVariables[playerid][pAdminName][0] == '*')
+		{
+			SendClientMessage(playerid, COLOR_GREY, "You don't have an admin name set. Contact a Head Admin (or higher) first.");
 		}
-		else {
-		    switch(playerVariables[playerid][pAdminDuty]) {
-				case 0: {
+		else 
+		{
+		    switch(playerVariables[playerid][pAdminDuty]) 
+			{
+				case 0: 
+				{
 				    playerVariables[playerid][pAdminDuty] = 1;
 					GetPlayerHealth(playerid, playerVariables[playerid][pHealth]);
 					GetPlayerArmour(playerid, playerVariables[playerid][pArmour]);
@@ -11983,7 +11987,8 @@ CMD:adminduty(playerid, params[]) {
 					SetPlayerHealth(playerid, 500000.0);
 					format(szMessage, sizeof(szMessage), "Notice: {FFFFFF}Admin %s (%s) is now on administrative duty.", playerVariables[playerid][pAdminName], playerVariables[playerid][pNormalName]);
 				}
-				case 1: {
+				case 1: 
+				{
 				    playerVariables[playerid][pAdminDuty] = 0;
 					SetPlayerName(playerid, playerVariables[playerid][pNormalName]);
 					SetPlayerHealth(playerid, playerVariables[playerid][pHealth]);
@@ -15424,8 +15429,7 @@ CMD:reports(playerid, params[]) {
 		            SendClientMessage(playerid, COLOR_WHITE, string);
 
 		            playerVariables[userID][pReport] = 0;
-		            format(playerVariables[userID][pReportMessage], 64, "(null)");
-
+					
 		            GetPlayerName(playerid, szPlayerName, MAX_PLAYER_NAME);
 
 		            format(string, sizeof(string), "Thank you for your report! Administrator %s is now reviewing your report.", szPlayerName);
@@ -15458,7 +15462,6 @@ CMD:reports(playerid, params[]) {
 					GetPlayerName(userID, szPlayerName, MAX_PLAYER_NAME);
 
 		            playerVariables[userID][pReport] = 0;
-		            format(playerVariables[userID][pReportMessage], 64, "(null)");
 
 		            format(string, sizeof(string), "You have disregarded %s's report.", szPlayerName);
 		            SendClientMessage(playerid, COLOR_WHITE, string);
@@ -16143,7 +16146,8 @@ CMD:warn(playerid, params[])
 	        if(playerVariables[playerWarnID][pAdminLevel] >= playerVariables[playerid][pAdminLevel])
 				return SendClientMessage(playerid, COLOR_GREY, "You can't warn a higher (or equal) level administrator.");
 
-	        if(!strcmp(playerVariables[playerWarnID][pWarning1], "(null)", true)) {
+			if(playerVariables[playerWarnID][pWarning1][0] == '*')
+	        {
 	            new
 
 	                messageString[128];
@@ -16160,7 +16164,8 @@ CMD:warn(playerid, params[])
 	            format(messageString, sizeof(messageString), "You have warned %s (for %s). This is their first warning.", szPlayerName, playerWarnReason);
 	            SendClientMessage(playerWarnID, COLOR_LIGHTRED, messageString);
 	        }
-	        else if(!strcmp(playerVariables[playerWarnID][pWarning2], "(null)", true)) {
+			else if(playerVariables[playerWarnID][pWarning2][0] == '*') 
+			{
 	            new
 
 	                messageString[128];
@@ -16177,7 +16182,8 @@ CMD:warn(playerid, params[])
 	            format(messageString, sizeof(messageString), "You have warned %s (for %s). This is their second warning.", szPlayerName, playerWarnReason);
 	            SendClientMessage(playerWarnID, COLOR_LIGHTRED, messageString);
 	        }
-	        else {
+	        else 
+			{
 	            new
 
 	                messageString[128];
